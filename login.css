@@ -1,0 +1,1258 @@
+/* ==========================================================
+   1. PALETA DE COLORES EBERSYS Y VARIABLES DEL DOCTOR
+   ========================================================== */
+:root {
+  /* Paleta principal */
+  --primary: #2371BA;
+  --secondary: #7400B8;
+  --accent: #FF66C4;
+  --success: #06D6A0;
+  --warning: #FFD166;
+  --danger: #900C3F;
+  --textMain: #333333;
+  --textSec: #666666;
+  --placeholder: #F0F4F8;
+
+  /* Mapeo al componente del Doctor */
+  --c-blue: var(--primary);
+  --c-purple: var(--secondary);
+  --c-pink: var(--accent);
+  --c-mint: var(--success);
+  --c-gold: #ffcdad;            /* Tono de piel del doctor */
+  --c-burgundy: var(--danger);
+  --c-charcoal: var(--textMain);
+  --c-gray: var(--textSec);
+  --c-ice: var(--placeholder);
+
+  --line-color: var(--c-charcoal);
+  --line-thick: 7px;
+  --hair-color: var(--c-purple);
+  --skin-color: var(--c-gold);
+  --cheek-color: var(--c-pink);
+  --coat-color: var(--c-ice);
+  --shirt-color: var(--c-blue);
+  --cross-color: var(--c-mint);
+  --syringe-liquid: var(--c-pink);
+  --stetho-tube: var(--c-gray);
+  --stetho-ear: var(--c-blue);
+  --stetho-bell: var(--c-mint);
+  --pants-color: var(--c-blue);
+  --shoes-color: var(--c-charcoal);
+  --bag-color: var(--c-burgundy);
+  --bag-handle: var(--c-gray);
+  --bag-cross: var(--c-ice);
+}
+
+/* ==========================================================
+   2. ANIMACIÓN DE LAS CRUCES CON DEGRADADO
+   ========================================================== */
+.cross-wrapper {
+  position: absolute;
+  user-select: none;
+  animation: floatUp linear infinite;
+}
+
+.gradient-cross {
+  display: inline-block;
+  font-family: sans-serif;
+  font-weight: bold;
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientTextMove 3s ease infinite;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
+}
+
+@keyframes gradientTextMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ==========================================================
+   3. ESCENA DEL DOCTOR Y SOMBRA DE PISO DISCRETA
+   ========================================================== */
+.doctor-scene {
+  position: relative;
+  width: 310px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.floor-shadow {
+  position: absolute;
+  top: 316px;
+  left: 43%;
+  transform: translateX(-50%);
+  width: 285px;
+  height: 26px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(51, 51, 51, 0.13) 0%,
+    rgba(35, 113, 186, 0.05) 55%,
+    rgba(240, 244, 248, 0) 78%
+  );
+  border-radius: 50%;
+  filter: blur(3px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.doctor {
+  position: relative;
+  width: 310px;
+  height: 400px;
+  user-select: none;
+  box-sizing: border-box;
+  z-index: 10;
+  animation: dropIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform: translateY(-200px);
+}
+
+@keyframes dropIn {
+  to { transform: translateY(0); }
+}
+
+.doctor *,
+.doctor *::before,
+.doctor *::after {
+  box-sizing: border-box;
+}
+
+/* Cabello morado con mechones */
+.doctor .hair {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 222px;
+  height: 98px;
+  z-index: 25;
+  pointer-events: none;
+}
+.doctor .hair svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 3px 0 rgba(51, 51, 51, 0.08));
+}
+.doctor .hair path {
+  fill: var(--hair-color);
+  stroke: var(--line-color);
+}
+
+/* Cabeza y rostro */
+.doctor .head {
+  position: absolute;
+  top: 44px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 186px;
+  height: 132px;
+  background-color: var(--skin-color);
+  border: var(--line-thick) solid var(--line-color);
+  border-radius: 46% 46% 48% 48%;
+  z-index: 20;
+  box-shadow: inset 0 -8px 0 rgba(144, 12, 63, 0.08);
+}
+
+/* Auriculares laterales del estetoscopio */
+.doctor .head::before,
+.doctor .head::after {
+  content: '';
+  position: absolute;
+  top: 42px;
+  width: 16px;
+  height: 28px;
+  background-color: var(--stetho-ear);
+  border: 6px solid var(--line-color);
+  border-radius: 12px;
+  box-sizing: content-box;
+}
+.doctor .head::before {
+  left: -19px;
+  transform: rotate(12deg);
+}
+.doctor .head::after {
+  right: -19px;
+  transform: rotate(-12deg);
+}
+
+/* Ojos redonditos y grandes */
+.doctor .eye {
+  position: absolute;
+  top: 52px;
+  width: 26px;
+  height: 26px;
+  background-color: var(--line-color);
+  border-radius: 50%;
+  z-index: 22;
+}
+.doctor .eye.left { left: 38px; }
+.doctor .eye.right { right: 38px; }
+
+/* Brillo blanco interactivo */
+.doctor .pupil {
+  width: 8px;
+  height: 8px;
+  background-color: var(--c-ice);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50% + 4px), calc(-50% - 4px));
+  transition: transform 0.1s ease-out;
+}
+
+/* Mejillas sonrojadas */
+.doctor .cheek {
+  position: absolute;
+  top: 76px;
+  width: 22px;
+  height: 11px;
+  background-color: var(--cheek-color);
+  border-radius: 50%;
+  opacity: 0.85;
+  z-index: 21;
+}
+.doctor .cheek.left { left: 22px; }
+.doctor .cheek.right { right: 22px; }
+
+/* Sonrisa normal */
+.doctor .mouth {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 20px;
+  background-color: var(--line-color);
+  border-radius: 0 0 26px 26px;
+  overflow: hidden;
+  z-index: 22;
+  transition: all 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.doctor .mouth::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 14px;
+  background-color: var(--cheek-color);
+  border-radius: 50%;
+  transition: opacity 0.2s ease;
+}
+
+/* Estetoscopio */
+.doctor .stethoscope {
+  position: absolute;
+  top: 108px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 216px;
+  height: 110px;
+  background: transparent;
+  border: 5px solid var(--line-color);
+  border-top: none;
+  border-radius: 0 0 110px 110px;
+  z-index: 12;
+  pointer-events: none;
+}
+.doctor .stethoscope::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: transparent;
+  border: 5px solid var(--stetho-tube);
+  border-top: none;
+  border-radius: 0 0 104px 104px;
+}
+.doctor .stethoscope::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 5px; right: 5px; bottom: 5px;
+  background: transparent;
+  border: 4px solid var(--line-color);
+  border-top: none;
+  border-radius: 0 0 98px 98px;
+}
+
+/* Conector inferior y campana del estetoscopio */
+.doctor .stetho-lower {
+  position: absolute;
+  top: 206px;
+  left: 135px;
+  width: 115px;
+  height: 62px;
+  border-bottom: 5px solid var(--line-color);
+  border-left: 5px solid var(--line-color);
+  border-radius: 0 0 40px 55px;
+  box-shadow:
+    -4px 4px 0 0 var(--stetho-tube),
+    -9px 9px 0 0 var(--line-color);
+  z-index: 14;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.doctor .stetho-bell {
+  position: absolute;
+  top: 220px;
+  right: 16px;
+  width: 50px;
+  height: 50px;
+  background-color: var(--stetho-bell);
+  border: 7px solid var(--line-color);
+  border-radius: 50%;
+  z-index: 16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.doctor .stetho-bell::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 5px solid var(--line-color);
+  border-radius: 50%;
+  background-color: var(--c-ice);
+  box-sizing: content-box;
+}
+
+/* Brazos y manos */
+.doctor .arm {
+  position: absolute;
+  top: 175px;
+  width: 46px;
+  height: 78px;
+  background-color: var(--coat-color);
+  border: var(--line-thick) solid var(--line-color);
+  z-index: 4;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.doctor .arm.left {
+  left: 52px;
+  border-radius: 35px 0 0 24px;
+  transform: rotate(14deg);
+}
+.doctor .arm.left::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 18px;
+  background-color: var(--skin-color);
+  border-top: 6px solid var(--line-color);
+}
+.doctor .arm.right {
+  right: 44px;
+  height: 70px;
+  border-radius: 0 40px 25px 0;
+  transform: rotate(-22deg);
+}
+.doctor .arm.right::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 16px;
+  background-color: var(--skin-color);
+  border-top: 6px solid var(--line-color);
+}
+
+/* Cuerpo y bata médica */
+.doctor .body {
+  position: absolute;
+  top: 162px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 142px;
+  height: 126px;
+  background-color: var(--coat-color);
+  border: var(--line-thick) solid var(--line-color);
+  border-radius: 26px 26px 6px 6px;
+  z-index: 5;
+  overflow: hidden;
+}
+.doctor .body::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 36px;
+  background-color: var(--shirt-color);
+  border: 5px solid var(--line-color);
+  border-radius: 0 0 30px 30px;
+  z-index: 2;
+}
+.doctor .coat-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 100%;
+  background-color: var(--line-color);
+  z-index: 1;
+}
+
+/* Cruz médica en el pecho */
+.doctor .chest-cross {
+  position: absolute;
+  top: 36px;
+  right: 16px;
+  width: 24px;
+  height: 8px;
+  background-color: var(--cross-color);
+  border: 4px solid var(--line-color);
+  box-sizing: content-box;
+  z-index: 3;
+}
+.doctor .chest-cross::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 4px;
+  width: 8px;
+  height: 24px;
+  background-color: var(--cross-color);
+  border: 4px solid var(--line-color);
+  box-sizing: content-box;
+}
+
+/* Bolsillo y termómetro/jeringa */
+.doctor .pocket {
+  position: absolute;
+  bottom: 24px;
+  left: 16px;
+  width: 38px;
+  height: 6px;
+  background-color: var(--line-color);
+  border-radius: 4px;
+  z-index: 3;
+}
+.doctor .syringe {
+  position: absolute;
+  bottom: 4px;
+  left: 9px;
+  width: 14px;
+  height: 32px;
+  background: linear-gradient(to top, var(--syringe-liquid) 55%, var(--c-ice) 55%);
+  border: 4px solid var(--line-color);
+  border-bottom: none;
+  border-radius: 7px 7px 0 0;
+  box-sizing: content-box;
+}
+.doctor .syringe::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 12px;
+  background-color: var(--c-mint);
+  border: 3px solid var(--line-color);
+  border-radius: 4px 4px 0 0;
+  box-sizing: content-box;
+}
+.doctor .syringe::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 0;
+  width: 4px;
+  height: 3px;
+  background-color: var(--line-color);
+  box-shadow: 0 7px 0 var(--line-color), 0 14px 0 var(--line-color);
+}
+
+/* Piernas y zapatos */
+.doctor .legs {
+  position: absolute;
+  top: 282px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 108px;
+  height: 44px;
+  z-index: 4;
+}
+.doctor .legs::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 8px; right: 8px;
+  height: 16px;
+  background-color: var(--pants-color);
+  border: var(--line-thick) solid var(--line-color);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  z-index: 2;
+}
+.doctor .leg {
+  position: absolute;
+  bottom: 0;
+  width: 53px;
+  height: 28px;
+  background-color: var(--shoes-color);
+  border: var(--line-thick) solid var(--line-color);
+}
+.doctor .leg.left { left: 0; border-radius: 24px 0 0 18px; }
+.doctor .leg.right { right: 0; border-radius: 0 24px 18px 0; }
+
+/* Maletín médico */
+.doctor .bag {
+  position: absolute;
+  bottom: 66px;
+  left: -16px;
+  width: 98px;
+  height: 80px;
+  z-index: 16;
+}
+.doctor .bag-handle {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 24px;
+  border: 5px solid var(--line-color);
+  box-shadow:
+    inset 0 0 0 4px var(--bag-handle),
+    inset 0 0 0 8px var(--line-color);
+  border-radius: 22px 22px 0 0;
+}
+.doctor .bag-body {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  height: 66px;
+  background-color: var(--bag-color);
+  border: var(--line-thick) solid var(--line-color);
+  border-radius: 16px;
+}
+.doctor .bag-cross {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 12px;
+  background-color: var(--bag-cross);
+  border-radius: 2px;
+}
+.doctor .bag-cross::after {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 15px;
+  width: 12px;
+  height: 42px;
+  background-color: var(--bag-cross);
+  border-radius: 2px;
+}
+
+/* ==========================================================
+   4. ESTADOS INTERACTIVOS DEL DOCTOR (Contraseña)
+   ========================================================== */
+.doctor.hiding .arm {
+  z-index: 26;
+  top: 82px;
+  width: 50px;
+  height: 92px;
+  border-radius: 22px 22px 26px 26px;
+}
+.doctor.hiding .arm.left {
+  left: 84px;
+  transform: rotate(-135deg);
+}
+.doctor.hiding .arm.right {
+  right: 84px;
+  transform: rotate(135deg);
+}
+.doctor.hiding .arm.left::after,
+.doctor.hiding .arm.right::after {
+  height: 34px;
+}
+.doctor.hiding .eye {
+  opacity: 0;
+  transition: opacity 0.15s ease 0.1s;
+}
+.doctor.hiding .stetho-lower {
+  top: 202px;
+  width: 115px;
+  height: 28px;
+  border-radius: 0 0 24px 28px;
+  transform: none;
+}
+.doctor.hiding .stetho-bell {
+  top: 180px;
+  right: 20px;
+  z-index: 27;
+}
+.doctor.hiding .mouth {
+  width: 16px;
+  height: 6px;
+  border-radius: 4px;
+}
+.doctor.hiding .mouth::after {
+  opacity: 0;
+}
+
+.doctor.shocked .mouth {
+  width: 24px;
+  height: 30px;
+  background-color: var(--line-color);
+  border: none;
+  border-radius: 50%;
+  bottom: 12px;
+  overflow: hidden;
+}
+.doctor.shocked .mouth::after {
+  opacity: 1;
+  width: 20px;
+  height: 14px;
+  bottom: -4px;
+}
+
+/* ==========================================================
+   5. TARJETA GLASSMORPHISM GRANDE (Formulario)
+   ========================================================== */
+.glass-card {
+  position: relative;
+  width: 100%;
+  max-width: 640px; 
+  padding: 32px 48px; 
+  border-radius: 36px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.18) 100%
+  );
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 20px 45px rgba(35, 113, 186, 0.12),
+    0 8px 20px rgba(51, 51, 51, 0.04),
+    inset 0 1px 4px rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Reflejo diagonal sutil que no tapa las cruces del fondo */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.05) 47%,
+    transparent 47.2%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glass-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-title {
+  font-size: 42px; /* Ajustado de 52px para equilibrar la altura */
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  background: linear-gradient(90deg, var(--success) 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.glass-subtitle {
+  color: var(--textMain);
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0 0 20px 0; /* Reducido de 38px */
+  text-align: center;
+}
+
+.glass-input-group {
+  width: 100%;
+  position: relative;
+  margin-bottom: 14px; /* Reducido de 22px */
+}
+
+.glass-input-group input {
+  width: 100%;
+  padding: 14px 48px; /* Más estilizado (antes 18px 52px) */
+  border-radius: 50px;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--textMain);
+  font-size: 15px;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(35, 113, 186, 0.04);
+}
+
+.glass-input-group input::placeholder {
+  color: var(--textSec);
+  opacity: 0.85;
+}
+
+.glass-input-group input:focus {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: var(--primary);
+  box-shadow: 0 0 18px rgba(35, 113, 186, 0.18);
+}
+
+.input-icon-left {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--textSec);
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+#toggle-pwd {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--textSec);
+  opacity: 0.8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s, opacity 0.3s;
+}
+
+#toggle-pwd:hover {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.remember-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 10px;
+  margin: 2px 0 32px 0;
+}
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--textSec);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.glass-login-btn {
+  width: 100%;
+  padding: 14px; /* Reducido de 18px */
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(90deg, var(--success) 0%, var(--primary) 52%, var(--secondary) 100%);
+  background-size: 150% auto;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(35, 113, 186, 0.35);
+  transition: all 0.35s ease;
+  margin-top: 4px;
+  margin-bottom: 18px; /* Reducido de 28px */
+}
+
+.glass-login-btn:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(116, 0, 184, 0.4);
+}
+
+.glass-login-btn:active {
+  transform: scale(0.98);
+}
+
+.signup-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.signup-prompt {
+  color: var(--textMain);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.glass-signup-btn {
+  padding: 8px 20px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--success) 0%, var(--primary) 55%, var(--secondary) 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(35, 113, 186, 0.28);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-signup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(116, 0, 184, 0.38);
+}
+
+/* ================= LOGO ANIMADO EBERSYS ================= */
+:root {
+  --anim-time: 6s; 
+  --brand-color: #7d4cf4;
+  --glass-color: #2bcee0;
+}
+
+/* Envoltorio para ajustar el tamaño en el Navbar y Footer sin romper los píxeles de la animación */
+.logo-wrapper {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  cursor: pointer;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  font-family: 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+  padding-left: 12px; /* Espacio para que la expansión de -10px a la izquierda no se corte */
+  width: fit-content;
+  transform: scale(0.55);
+  transform-origin: left center;
+  margin-right: -95px; /* Compensa el espacio vacío que deja el scale() */
+  user-select: none;
+}
+
+.e-icon {
+  position: relative;
+  width: 38px; 
+  height: 60px;
+  margin-right: 6px; 
+  animation: anim-container var(--anim-time) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.e-icon .line {
+  position: absolute;
+  border-radius: 4px;
+  background-color: var(--brand-color);
+  animation-duration: var(--anim-time);
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-iteration-count: infinite;
+}
+
+.e-icon .left-line {
+  height: 100%;
+  left: 0;
+  top: 0;
+  animation-name: anim-left-wall;
+}
+
+.e-icon .top-line {
+  left: 0;
+  top: 0;
+  animation-name: anim-roof;
+}
+
+.e-icon .mid-line {
+  animation-name: anim-right-wall;
+}
+
+.e-icon .bottom-line {
+  left: 0;
+  bottom: 0;
+  animation-name: anim-floor;
+}
+
+/* Detalles de la fachada del hospital */
+.hospital-details {
+  position: absolute;
+  left: 6px; 
+  top: 6px;
+  width: 36px;
+  height: 48px;
+  background-color: #ffffff; 
+  border-radius: 2px;
+  animation: anim-details var(--anim-time) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.h-cross {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 3px;
+  left: 13px;
+}
+.h-cross::before, .h-cross::after {
+  content: '';
+  position: absolute;
+  background-color: #FF619A;
+  border-radius: 2px;
+}
+.h-cross::before { width: 100%; height: 4px; top: 3px; left: 0; }
+.h-cross::after { width: 4px; height: 100%; left: 3px; top: 0; }
+
+.h-windows {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: var(--glass-color);
+  border-radius: 1px;
+  top: 17px;
+  left: 3px;
+  box-shadow: 
+    12px 0 0 var(--glass-color),
+    24px 0 0 var(--glass-color),
+    0 9px 0 var(--glass-color),
+    12px 9px 0 var(--glass-color),
+    24px 9px 0 var(--glass-color);
+}
+
+.h-door {
+  position: absolute;
+  width: 14px;
+  height: 12px;
+  background-color: var(--glass-color);
+  border-radius: 2px 2px 0 0;
+  bottom: 0;
+  left: 11px;
+}
+
+.logo-container .text {
+  letter-spacing: 0.5px;
+  color: var(--brand-color);
+  line-height: 1;
+}
+
+/* Keyframes del logo */
+@keyframes anim-container {
+  0%, 15% { transform: translateX(0); }
+  35%, 65% { transform: translateX(-10px); } 
+  85%, 100% { transform: translateX(0); }
+}
+
+@keyframes anim-left-wall {
+  0%, 15% { width: 10px; }
+  35%, 65% { width: 6px; } 
+  85%, 100% { width: 10px; }
+}
+
+@keyframes anim-roof {
+  0%, 15% { width: 38px; height: 10px; }
+  35%, 65% { width: 48px; height: 6px; } 
+  85%, 100% { width: 38px; height: 10px; }
+}
+
+@keyframes anim-floor {
+  0%, 15% { width: 38px; height: 10px; }
+  35%, 65% { width: 48px; height: 6px; } 
+  85%, 100% { width: 38px; height: 10px; }
+}
+
+@keyframes anim-right-wall {
+  0%, 15% { width: 28px; height: 10px; left: 0; top: 25px; }
+  35%, 65% { width: 6px; height: 60px; left: 42px; top: 0; }
+  85%, 100% { width: 28px; height: 10px; left: 0; top: 25px; }
+}
+
+@keyframes anim-details {
+  0%, 20% { opacity: 0; transform: scale(0.8); }
+  35%, 65% { opacity: 1; transform: scale(1); }
+  80%, 100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* ==========================================================
+   6. ALERTAS Y ACCESOS RÁPIDOS DE ROL EN EL LOGIN
+   ========================================================== */
+.login-alert {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.login-alert.error {
+  background: rgba(144, 12, 63, 0.14);
+  color: var(--danger);
+  border: 1.5px solid rgba(144, 12, 63, 0.35);
+}
+
+.login-alert.success {
+  background: rgba(6, 214, 160, 0.18);
+  color: #005a3c;
+  border: 1.5px solid var(--success);
+}
+
+.demo-access-box {
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  padding-top: 12px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.demo-access-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--textSec);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.demo-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(6px);
+  color: var(--textMain);
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.demo-pill:hover {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================
+   7. ESTILOS DEL PANEL DE REGISTRO (1. Datos del Paciente)
+   ========================================================== */
+.reg-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--textMain);
+  margin-bottom: 4px;
+}
+
+.reg-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--textMain);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.reg-input::placeholder {
+  color: #8896ab;
+}
+
+.reg-input:focus {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--primary);
+  box-shadow: 0 0 14px rgba(35, 113, 186, 0.16);
+}
+
+.reg-select-lada {
+  padding: 10px 12px;
+  border-radius: 12px 0 0 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-right: none;
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--textMain);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+}
+
+.toggle-pwd-btn {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--textSec);
+  opacity: 0.8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s, opacity 0.3s;
+}
+
+.toggle-pwd-btn:hover {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.glass-signup-btn {
+  border: none;
+  cursor: pointer;
+}
+
+/* ==========================================================
+   INDICADOR DE APARTADO ACTIVO EN EL NAVBAR (HOVER + ACTIVE)
+   ========================================================== */
+.nav-ebersys {
+  position: relative;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #666666;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+/* Barra inferior animada */
+.nav-ebersys::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 65%;
+  height: 3px;
+  border-radius: 999px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-ebersys:hover::after,
+.nav-ebersys.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Variante Azul (Inicio) */
+.nav-ebersys.nav-primary:hover,
+.nav-ebersys.nav-primary.active {
+  color: #2371BA;
+  background: rgba(35, 113, 186, 0.08);
+  font-weight: 700;
+}
+.nav-ebersys.nav-primary::after {
+  background: linear-gradient(90deg, #2371BA, #06D6A0);
+}
+
+/* Variante Morada (Agendar cita / Iniciar Sesión) */
+.nav-ebersys.nav-secondary:hover,
+.nav-ebersys.nav-secondary.active {
+  color: #7400B8;
+  background: rgba(116, 0, 184, 0.08);
+  font-weight: 700;
+}
+.nav-ebersys.nav-secondary::after {
+  background: linear-gradient(90deg, #2371BA, #7400B8);
+}
+
+/* Variante Rosa (Consultorios / Crear Cuenta) */
+.nav-ebersys.nav-accent:hover,
+.nav-ebersys.nav-accent.active {
+  color: #FF66C4;
+  background: rgba(255, 102, 196, 0.1);
+  font-weight: 700;
+}
+.nav-ebersys.nav-accent::after {
+  background: linear-gradient(90deg, #7400B8, #FF66C4);
+}
+
+/* Variante Verde Menta (Reglas de Atención) */
+.nav-ebersys.nav-success:hover,
+.nav-ebersys.nav-success.active {
+  color: #059669;
+  background: rgba(6, 214, 160, 0.14);
+  font-weight: 700;
+}
+.nav-ebersys.nav-success::after {
+  background: linear-gradient(90deg, #06D6A0, #2371BA);
+}
+
+/* Botón para volver del Login al Index */
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2371BA;
+  background: rgba(35, 113, 186, 0.08);
+  border: 1.5px solid rgba(35, 113, 186, 0.25);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.btn-back-home:hover {
+  background: #2371BA;
+  color: #ffffff;
+  transform: translateX(-2px);
+  box-shadow: 0 6px 16px rgba(35, 113, 186, 0.25);
+}

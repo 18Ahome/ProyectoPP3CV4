@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ebersys — Portal del Paciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="paciente.css" />
+</head>
+<body>
+
+  <div class="dashboard-shell">
+    <!-- SIDEBAR IZQUIERDO -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a href="#" class="logo-wrapper">
+          <div class="logo-container">
+            <div class="e-icon">
+              <div class="line left-line"></div>
+              <div class="line top-line"></div>
+              <div class="line mid-line"></div>
+              <div class="line bottom-line"></div>
+              <div class="hospital-details">
+                <div class="h-cross"></div>
+                <div class="h-windows"></div>
+                <div class="h-door"></div>
+              </div>
+            </div>
+            <div class="text">bersys</div>
+          </div>
+        </a>
+
+        <nav class="side-nav">
+          <button id="btnTabCitas" class="nav-item active" onclick="cambiarVista('citas')">
+            <span>📅 Citas Médicas</span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="btnTabEstudios" class="nav-item" onclick="cambiarVista('estudios')">
+            <span>🔬 Estudios Clínicos</span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="btnTabFarmacia" class="nav-item" onclick="cambiarVista('farmacia')">
+            <span>💊 Farmacia y Recetas</span>
+            <span class="arrow">›</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main-workspace">
+      <header class="workspace-header">
+        <div>
+          <h1>Portal del Paciente</h1>
+          <p class="subtitle">Seguimiento de consultas, estudios y recetas médicas</p>
+        </div>
+        <div class="user-bar">
+          <span id="lblFlagsPaciente"></span>
+          <span class="badge badge-paciente">👤 PACIENTE</span>
+          <span id="lblNombreUsuario" class="user-name">Cargando...</span>
+        </div>
+      </header>
+
+      <div id="alertaGlobal"></div>
+
+      <!-- BANDEJA DE NOTIFICACIONES -->
+      <div id="panelNotificacionesPaciente" class="notif-banner hidden">
+        <h3>🔔 Avisos Importantes sobre tus Citas Médicas</h3>
+        <div id="listaNotificacionesPaciente"></div>
+      </div>
+
+      <!-- 4 TARJETAS KPI ESTILO REFERENCIA -->
+      <section class="kpi-grid">
+        <div class="kpi-card kpi-lavender">
+          <div class="kpi-top">
+            <div class="kpi-avatar">📅</div>
+            <span class="kpi-pill">Activas</span>
+          </div>
+          <div class="kpi-label">Citas Programadas</div>
+          <div class="kpi-value" id="kpiCitasActivas">0</div>
+        </div>
+
+        <div class="kpi-card kpi-cyan">
+          <div class="kpi-top">
+            <div class="kpi-avatar">🔬</div>
+            <span class="kpi-pill">Órdenes</span>
+          </div>
+          <div class="kpi-label">Estudios Solicitados</div>
+          <div class="kpi-value" id="kpiEstudiosTotal">0</div>
+        </div>
+
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-top">
+            <div class="kpi-avatar">⚠️</div>
+            <span class="kpi-pill">1-24h</span>
+          </div>
+          <div class="kpi-label">Reincidencias</div>
+          <div class="kpi-value" id="kpiReincidencias">0</div>
+        </div>
+
+        <div class="kpi-card kpi-pink">
+          <div class="kpi-top">
+            <div class="kpi-avatar">🚫</div>
+            <span class="kpi-pill">&lt;1h</span>
+          </div>
+          <div class="kpi-label">Sanciones / Faltas</div>
+          <div class="kpi-value" id="kpiSanciones">0</div>
+        </div>
+      </section>
+
+      <!-- VISTA 1: CITAS MÉDICAS -->
+      <section id="vistaCitas" class="bento-grid">
+        <div class="glass-card">
+          <h2>Agendar Nueva Cita</h2>
+          <form id="formCita">
+            <div class="form-group">
+              <label>Paciente</label>
+              <select id="selectPaciente" disabled required></select>
+            </div>
+            <div class="form-group">
+              <label>Consultorio (Agrupado por Especialidad)</label>
+              <select id="selectConsultorio" onchange="actualizarInfoConsultorioCita()" required></select>
+            </div>
+            <div id="infoHorarioConsultorio" class="info-horario-box">
+              Selecciona un consultorio para ver sus horarios y médicos disponibles.
+            </div>
+            <div class="form-group">
+              <label>Médico que atenderá</label>
+              <select id="selectDoctor" onchange="cargarSlotsDisponiblesUI()" required></select>
+            </div>
+            <div class="form-group">
+              <label>1. Selecciona la Fecha de la Cita (No permite pasadas) *</label>
+              <input type="date" id="inputFechaCita" onchange="cargarSlotsDisponiblesUI()" required />
+            </div>
+            <div class="form-group">
+              <label>2. Selecciona un Bloque de Horario Disponible (30 min) *</label>
+              <input type="hidden" id="inputSlotSeleccionado" required />
+              <div id="contenedorSlots" class="slots-grid"></div>
+              <small class="legend-text">🟢 Disponible | 🔴 Ocupado | 🟣 Bloqueado | ⚪ Hora pasada</small>
+            </div>
+            <button type="submit" class="btn">Confirmar y Agendar Cita</button>
+          </form>
+        </div>
+
+        <div class="glass-card table-wrapper">
+          <h2>📅 Mis Citas Médicas</h2>
+          <div class="rules-box">
+            <strong>📌 Reglas de Cancelación:</strong> &gt;24h Liberación total | 1-24h Flag Reincidencia | &lt;1h Sanción/Inasistencia.
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha y Hora</th>
+                <th>Paciente</th>
+                <th>Doctor / Consultorio</th>
+                <th>Estado / Detalle</th>
+                <th>Diagnóstico (CU-06)</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaCitas"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VISTA 2: ESTUDIOS CLÍNICOS -->
+      <section id="vistaEstudios" class="hidden">
+        <div class="glass-card table-wrapper">
+          <h2>🔬 Mis Estudios Clínicos Solicitados (CU-09)</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha Solicitud</th>
+                <th>Paciente</th>
+                <th>Estudio Solicitado</th>
+                <th>Indicaciones</th>
+                <th>Cita Origen / Diagnóstico</th>
+              </tr>
+            </thead>
+            <tbody id="tablaSolicitudesEstudios"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VISTA 3: FARMACIA Y RECETAS -->
+      <section id="vistaFarmacia" class="hidden">
+        <div class="glass-card table-wrapper">
+          <div class="card-header-flex">
+            <h2>💊 Mis Recetas Médicas</h2>
+            <input type="text" id="inputBuscarFolio" placeholder="🔍 Buscar por Folio Físico..." oninput="renderizarTablaRecetas()" style="max-width: 260px;" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Folio Físico / Emisión</th>
+                <th>Paciente / Médico</th>
+                <th>Medicamentos y Dosis</th>
+                <th>Estado</th>
+                <th>Estado Entrega</th>
+              </tr>
+            </thead>
+            <tbody id="tablaRecetas"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="paciente.js"></script>
+</body>
+</html>

@@ -1,0 +1,561 @@
+/* CONTENEDOR DE TARJETAS (Guía rápida) */
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px 80px 60px; /* Aumentamos el padding izquierdo a 60px */
+  overflow: visible; /* Cambiamos a visible para que no se corten al deslizarse */
+}
+
+/* ESTILO BASE DE CRISTAL TINTADO */
+.card {
+  width: 220px;
+  height: 320px;
+  border-radius: 20px;
+  padding: 24px 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 
+              inset 0 1px 1px rgba(255, 255, 255, 0.6); 
+  
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  
+  cursor: pointer;
+  position: relative;
+  margin-left: -60px; 
+
+  transition: translate 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              rotate 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              margin 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+              box-shadow 0.4s ease;
+  translate: var(--t-x, 0px) var(--t-y, 0px);
+  rotate: var(--r, 0deg);
+}
+
+.card:first-child { margin-left: 0; }
+
+/* TINTADO POR TARJETA */
+.card-1 { 
+  background: linear-gradient(135deg, rgba(255, 94, 207, 0.35) 0%, rgba(255, 0, 187, 0.15) 100%);
+  border-color: rgba(255, 200, 244, 0.4);
+  --t-y: 10px; 
+  --r: -8deg; 
+  z-index: 1; 
+}
+
+.card-2 { 
+  background: linear-gradient(135deg, rgba(102, 255, 242, 0.35) 0%, rgba(102, 186, 255, 0.15) 100%);
+  border-color: rgba(102, 252, 255, 0.4);
+  --t-y: 20px; 
+  --r: -3deg; 
+  z-index: 2; 
+}
+
+.card-3 { 
+  background: linear-gradient(135deg, rgba(250, 255, 102, 0.45) 0%, rgba(219, 255, 102, 0.2) 100%);
+  border-color: rgba(232, 255, 102, 0.5);
+  --t-y: 25px; 
+  --r: 4deg; 
+  z-index: 3; 
+}
+
+.card-4 { 
+  background: linear-gradient(135deg, rgba(0, 253, 135, 0.35) 0%, rgba(124, 255, 205, 0.15) 100%);
+  border-color: rgba(203, 255, 227, 0.4);
+  --t-x: 20px; 
+  --t-y: 15px; 
+  --r: 10deg; 
+  z-index: 4; 
+}
+
+/* EFECTO DE DESPEJAR LA VISTA */
+.card-container:has(.card:hover) .card:not(:hover):has(~ .card:hover) {
+  --t-x: -80px; 
+}
+
+.card:hover ~ .card {
+  --t-x: 80px; 
+}
+
+.card:hover {
+  --r: 0deg;
+  margin: 0px 20px 0px -10px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 
+              inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* TIPOGRAFÍA DE LAS TARJETAS */
+.card h3 {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 80px; 
+  color: #111;
+  font-weight: bold;
+}
+.card h2 {
+  font-family: sans-serif;
+  font-size: 20px;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  color: #000;
+  font-weight: bold;
+}
+.card p {
+  font-family: sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #222;
+}
+
+/* Custom Scrollbar para el bloque de horarios */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.02);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(35, 113, 186, 0.3); /* Color primary con opacidad */
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(35, 113, 186, 0.6);
+}
+
+/* ================= ESTILOS DE LOS BOTONES ANIMADOS (SLIDER) ================= */
+.btn-toggle {
+    appearance: none;
+    background-color: #FCFCFD;
+    border-radius: 12px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, 
+                rgba(45, 35, 66, 0.3) 0 7px 13px -3px, 
+                #D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A; 
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    height: 56px;
+    padding: 0 24px;
+    position: relative;
+    text-decoration: none;
+    transition: box-shadow .15s, transform .15s;
+    user-select: none;
+    font-size: 18px;
+    font-weight: 700;
+    width: 100%;
+    max-width: 250px;
+    overflow: hidden; /* Mantiene el círculo dentro del borde redondeado */
+    z-index: 1;
+}
+
+/* Capa de color absoluta que se superpone al botón base */
+.btn-color-layer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: clip-path 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none; 
+}
+
+/* Asegurar que el texto en ambas capas se comporte exactamente igual */
+.btn-content {
+    white-space: nowrap;
+}
+
+/* --- ESTILOS INICIALES Y COLORES --- */
+.btn-estudios .btn-color-layer {
+    background-image: linear-gradient(135deg, rgb(0, 255, 117) 0%, rgb(0, 255, 209) 100%);
+    color: #004d26; /* Texto oscuro para el fondo verde */
+    clip-path: circle(0% at 100% 50%); /* Empieza invisible a la derecha */
+}
+
+.btn-cita .btn-color-layer {
+    background-image: linear-gradient(135deg, rgb(166, 0, 255) 0%, rgb(189, 143, 255) 100%);
+    color: #ffffff; /* Texto blanco para el fondo morado */
+    clip-path: circle(0% at 0% 50%); /* Empieza invisible a la izquierda */
+}
+
+/* --- ESTADO HOVER (Pase de cursor sin clic) --- */
+.btn-estudios:not(.selected):hover .btn-color-layer {
+    clip-path: circle(25% at 100% 50%); 
+}
+.btn-cita:not(.selected):hover .btn-color-layer {
+    clip-path: circle(25% at 0% 50%); 
+}
+
+/* --- EFECTOS 3D DE SOMBRA Y MOVIMIENTO --- */
+.btn-toggle:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+}
+.btn-toggle:active {
+    box-shadow: #D6D6E7 0 3px 7px inset;
+    transform: translateY(2px);
+}
+
+/* --- ESTADOS SELECCIONADOS (El círculo cubre el 100%) --- */
+.btn-estudios.selected .btn-color-layer {
+    clip-path: circle(150% at 100% 50%); 
+}
+.btn-cita.selected .btn-color-layer {
+    clip-path: circle(150% at 0% 50%);
+}
+
+/* Ajustes de sombra interior para coincidir con el color seleccionado */
+.btn-toggle.selected.btn-estudios {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, rgba(0, 120, 60, 0.3) 0 -3px 0 inset;
+}
+.btn-toggle.selected.btn-estudios:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, rgba(0, 120, 60, 0.3) 0 -3px 0 inset;
+}
+.btn-toggle.selected.btn-estudios:active { 
+    box-shadow: rgba(0, 120, 60, 0.4) 0 3px 7px inset; 
+}
+
+.btn-toggle.selected.btn-cita {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, rgba(100, 0, 180, 0.4) 0 -3px 0 inset;
+}
+.btn-toggle.selected.btn-cita:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, rgba(100, 0, 180, 0.4) 0 -3px 0 inset;
+}
+.btn-toggle.selected.btn-cita:active { 
+    box-shadow: rgba(100, 0, 180, 0.5) 0 3px 7px inset; 
+}
+
+/* ================= GLASSMORPHISM PARA EL FORMULARIO ================= */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 15px 35px 0 rgba(31, 38, 135, 0.1);
+}
+
+.glass-info {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* ================= ANIMACIÓN E ICONOS DE VALIDACIÓN ================= */
+.i-valida {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: none;
+    z-index: 10;
+    pointer-events: none;
+    animation: bounceIn 0.6s linear;
+}
+
+/* Base64 extraídos directamente de tu CSS */
+.i-warning {
+    background-image: url("data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDYxMi44MTYgNjEyLjgxNiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNjEyLjgxNiA2MTIuODE2OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCI+CjxnPgoJPHBhdGggZD0iTTMwNi40MDgsMEMxMzcuMzY4LDAsMC4zNzEsMTM2Ljk5NywwLjM3MSwzMDYuMDM3czEzNi45OTcsMzA2Ljc3OSwzMDYuMDM3LDMwNi43NzlzMzA2LjAzNy0xMzcuODEzLDMwNi4wMzctMzA2LjAzNyAgIEM2MTIuNDQ1LDEzNy43MzksNDc1LjQ0OCwwLDMwNi40MDgsMHogTTMwNi40MDgsNTgzLjE0N2MtMTUyLjIwMywwLTI3Ni4zNjgtMTI0LjE2NS0yNzYuMzY4LTI3Ni4zNjggICBTMTU0LjIwNSwyOS41OTUsMzA2LjQwOCwyOS41OTVTNTgyLjc3NiwxNTMuNzYsNTgyLjc3NiwzMDYuNzc5UzQ1OC42MTEsNTgzLjE0NywzMDYuNDA4LDU4My4xNDd6IE0zMjEuNjEzLDQzMS43NiAgIGMwLDguODI3LTcuMTk1LDE2LjAyMS0xNi4wMjEsMTYuMDIxYy04LjgyNywwLTE2LjAyMS03LjE5NS0xNi4wMjEtMTYuMDIxYzAtOC44MjcsNy4xOTUtMTYuMDIxLDE2LjAyMS0xNi4wMjEgICBTMzIxLjYxMyw0MjIuOTM0LDMyMS42MTMsNDMxLjc2eiBNMjkwLjM4NywzNTMuMjExdi0xODAuMjRjMC04LjAxMSw2LjM3OS0xNC4zOSwxNC4zOS0xNC4zOWM4LjAxMSwwLDE0LjM5LDYuMzc5LDE0LjM5LDE0LjM5ICAgdjE4MC4yNGMwLDguMDExLTYuMzc5LDE0LjM5LTE0LjM5LDE0LjM5QzI5Ni43NjYsMzY4LjQ5MSwyOTAuMzg3LDM2MS4yMjIsMjkwLjM4NywzNTMuMjExeiIgZmlsbD0iI2Y1ZDg3OCIvPgo8L2c+Cjwvc3ZnPgo=");
+}
+.i-save {
+    background-image: url("data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCIgdmlld0JveD0iMCAwIDYxMiA2MTIiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDYxMiA2MTI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8ZyBpZD0idGljayI+CgkJPGc+CgkJCTxwYXRoIGQ9Ik00MzYuNywxOTYuNzAxTDI1OC4xODgsMzc1LjIxM2wtODIuODY5LTgyLjg4N2MtNy4yODctNy4yODctMTkuMTI1LTcuMjg3LTI2LjQxMiwwcy03LjI4NywxOS4xMjUsMCwyNi40MTIgICAgIGw5My44MDgsOTMuODA4YzAuNjMxLDAuODk5LDEuMDE0LDEuOTMyLDEuODE3LDIuNzM1YzMuNzY4LDMuNzY4LDguNzIxLDUuNTA4LDEzLjY1NSw1LjM3NGM0LjkzNCwwLjExNSw5LjkwNy0xLjYwNiwxMy42NzQtNS4zNzQgICAgIGMwLjgwMy0wLjgwNCwxLjE4Ni0xLjgzNiwxLjgxNy0yLjczNWwxODkuNDM0LTE4OS40MzNjNy4yODYtNy4yODcsNy4yODYtMTkuMTI1LDAtMjYuNDEyICAgICBDNDU1LjgwNiwxODkuNDE0LDQ0My45ODcsMTg5LjQxNCw0MzYuNywxOTYuNzAxeiBNMzA2LDBDMTM2Ljk5MiwwLDAsMTM2Ljk5MiwwLDMwNnMxMzYuOTkyLDMwNiwzMDYsMzA2ICAgICBjMTY4Ljk4OCwwLDMwNi0xMzYuOTkyLDMwNi0zMDZTNDc1LjAwOCwwLDMwNiwweiBNMzA2LDU3My43NUMxNTguMTI1LDU3My43NSwzOC4yNSw0NTMuODc1LDM4LjI1LDMwNiAgICAgQzM4LjI1LDE1OC4xMjUsMTU4LjEyNSwzOC4yNSwzMDYsMzguMjVjMTQ3Ljg3NSwwLDI2Ny43NSwxMTkuODc1LDI2Ny43NSwyNjcuNzVDNTczLjc1LDQ1My44NzUsNDUzLjg3NSw1NzMuNzUsMzA2LDU3My43NXoiIGZpbGw9IiMyMGMxOTgiLz4KCQk8L2c+Cgk8L2c+Cjwvc3ZnPgo=");
+}
+
+@keyframes bounceIn {
+    0% { opacity: 0; transform: scale(.3) translateY(-50%); }
+    50% { opacity: 1; transform: scale(1.05) translateY(-50%); }
+    70% { transform: scale(.9) translateY(-50%); }
+    100% { transform: scale(1) translateY(-50%); }
+}
+
+/* ================= LOGO ANIMADO EBERSYS ================= */
+:root {
+  --anim-time: 6s; 
+  --brand-color: #7d4cf4;
+  --glass-color: #2bcee0;
+}
+
+/* Envoltorio para ajustar el tamaño en el Navbar y Footer sin romper los píxeles de la animación */
+.logo-wrapper {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  cursor: pointer;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  font-family: 'Arial Rounded MT Bold', 'Nunito', system-ui, sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+  padding-left: 12px; /* Espacio para que la expansión de -10px a la izquierda no se corte */
+  width: fit-content;
+  transform: scale(0.55);
+  transform-origin: left center;
+  margin-right: -95px; /* Compensa el espacio vacío que deja el scale() */
+  user-select: none;
+}
+
+/* Versión más grande para el Footer */
+.logo-wrapper-footer {
+  height: 52px; /* Más altura para que no se encime con el texto de abajo */
+}
+
+.logo-wrapper-footer .logo-container {
+  transform: scale(0.75); /* Súbelo a 0.85 o 1 si lo quieres aún más grande */
+  margin-right: -60px; /* Ajuste proporcional al nuevo tamaño */
+}
+
+.e-icon {
+  position: relative;
+  width: 38px; 
+  height: 60px;
+  margin-right: 6px; 
+  animation: anim-container var(--anim-time) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.e-icon .line {
+  position: absolute;
+  border-radius: 4px;
+  background-color: var(--brand-color);
+  animation-duration: var(--anim-time);
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-iteration-count: infinite;
+}
+
+.e-icon .left-line {
+  height: 100%;
+  left: 0;
+  top: 0;
+  animation-name: anim-left-wall;
+}
+
+.e-icon .top-line {
+  left: 0;
+  top: 0;
+  animation-name: anim-roof;
+}
+
+.e-icon .mid-line {
+  animation-name: anim-right-wall;
+}
+
+.e-icon .bottom-line {
+  left: 0;
+  bottom: 0;
+  animation-name: anim-floor;
+}
+
+/* Detalles de la fachada del hospital */
+.hospital-details {
+  position: absolute;
+  left: 6px; 
+  top: 6px;
+  width: 36px;
+  height: 48px;
+  background-color: #ffffff; 
+  border-radius: 2px;
+  animation: anim-details var(--anim-time) cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.h-cross {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 3px;
+  left: 13px;
+}
+.h-cross::before, .h-cross::after {
+  content: '';
+  position: absolute;
+  background-color: #FF619A;
+  border-radius: 2px;
+}
+.h-cross::before { width: 100%; height: 4px; top: 3px; left: 0; }
+.h-cross::after { width: 4px; height: 100%; left: 3px; top: 0; }
+
+.h-windows {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: var(--glass-color);
+  border-radius: 1px;
+  top: 17px;
+  left: 3px;
+  box-shadow: 
+    12px 0 0 var(--glass-color),
+    24px 0 0 var(--glass-color),
+    0 9px 0 var(--glass-color),
+    12px 9px 0 var(--glass-color),
+    24px 9px 0 var(--glass-color);
+}
+
+.h-door {
+  position: absolute;
+  width: 14px;
+  height: 12px;
+  background-color: var(--glass-color);
+  border-radius: 2px 2px 0 0;
+  bottom: 0;
+  left: 11px;
+}
+
+.logo-container .text {
+  letter-spacing: 0.5px;
+  color: var(--brand-color);
+  line-height: 1;
+}
+
+/* Keyframes del logo */
+@keyframes anim-container {
+  0%, 15% { transform: translateX(0); }
+  35%, 65% { transform: translateX(-10px); } 
+  85%, 100% { transform: translateX(0); }
+}
+
+@keyframes anim-left-wall {
+  0%, 15% { width: 10px; }
+  35%, 65% { width: 6px; } 
+  85%, 100% { width: 10px; }
+}
+
+@keyframes anim-roof {
+  0%, 15% { width: 38px; height: 10px; }
+  35%, 65% { width: 48px; height: 6px; } 
+  85%, 100% { width: 38px; height: 10px; }
+}
+
+@keyframes anim-floor {
+  0%, 15% { width: 38px; height: 10px; }
+  35%, 65% { width: 48px; height: 6px; } 
+  85%, 100% { width: 38px; height: 10px; }
+}
+
+@keyframes anim-right-wall {
+  0%, 15% { width: 28px; height: 10px; left: 0; top: 25px; }
+  35%, 65% { width: 6px; height: 60px; left: 42px; top: 0; }
+  85%, 100% { width: 28px; height: 10px; left: 0; top: 25px; }
+}
+
+@keyframes anim-details {
+  0%, 20% { opacity: 0; transform: scale(0.8); }
+  35%, 65% { opacity: 1; transform: scale(1); }
+  80%, 100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* ==========================================================
+   INDICADOR DE APARTADO ACTIVO EN EL NAVBAR (HOVER + ACTIVE)
+   ========================================================== */
+.nav-ebersys {
+  position: relative;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #666666;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+/* Barra inferior animada */
+.nav-ebersys::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 65%;
+  height: 3px;
+  border-radius: 999px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-ebersys:hover::after,
+.nav-ebersys.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Variante Azul (Inicio) */
+.nav-ebersys.nav-primary:hover,
+.nav-ebersys.nav-primary.active {
+  color: #2371BA;
+  background: rgba(35, 113, 186, 0.08);
+  font-weight: 700;
+}
+.nav-ebersys.nav-primary::after {
+  background: linear-gradient(90deg, #2371BA, #06D6A0);
+}
+
+/* Variante Morada (Agendar cita / Iniciar Sesión) */
+.nav-ebersys.nav-secondary:hover,
+.nav-ebersys.nav-secondary.active {
+  color: #7400B8;
+  background: rgba(116, 0, 184, 0.08);
+  font-weight: 700;
+}
+.nav-ebersys.nav-secondary::after {
+  background: linear-gradient(90deg, #2371BA, #7400B8);
+}
+
+/* Variante Rosa (Consultorios / Crear Cuenta) */
+.nav-ebersys.nav-accent:hover,
+.nav-ebersys.nav-accent.active {
+  color: #FF66C4;
+  background: rgba(255, 102, 196, 0.1);
+  font-weight: 700;
+}
+.nav-ebersys.nav-accent::after {
+  background: linear-gradient(90deg, #7400B8, #FF66C4);
+}
+
+/* Variante Verde Menta (Reglas de Atención) */
+.nav-ebersys.nav-success:hover,
+.nav-ebersys.nav-success.active {
+  color: #059669;
+  background: rgba(6, 214, 160, 0.14);
+  font-weight: 700;
+}
+.nav-ebersys.nav-success::after {
+  background: linear-gradient(90deg, #06D6A0, #2371BA);
+}
+
+/* Botón para volver del Login al Index */
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2371BA;
+  background: rgba(35, 113, 186, 0.08);
+  border: 1.5px solid rgba(35, 113, 186, 0.25);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.btn-back-home:hover {
+  background: #2371BA;
+  color: #ffffff;
+  transform: translateX(-2px);
+  box-shadow: 0 6px 16px rgba(35, 113, 186, 0.25);
+}

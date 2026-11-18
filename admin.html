@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ebersys — Panel Administrador y RH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <div class="dashboard-shell">
+    <!-- SIDEBAR IZQUIERDO -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a href="#" class="logo-wrapper">
+          <div class="logo-container">
+            <div class="e-icon">
+              <div class="line left-line"></div>
+              <div class="line top-line"></div>
+              <div class="line mid-line"></div>
+              <div class="line bottom-line"></div>
+              <div class="hospital-details">
+                <div class="h-cross"></div>
+                <div class="h-windows"></div>
+                <div class="h-door"></div>
+              </div>
+            </div>
+            <div class="text">bersys</div>
+          </div>
+        </a>
+
+        <nav class="side-nav">
+          <button id="btnTabCatalogos" class="nav-item active" onclick="cambiarVista('catalogos')">
+            <span>➕ Panel Admin y RH</span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="btnTabCitas" class="nav-item" onclick="cambiarVista('citas')">
+            <span>📅 Citas Médicas</span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="btnTabEstudios" class="nav-item" onclick="cambiarVista('estudios')">
+            <span>🔬 Estudios Clínicos</span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="btnTabFarmacia" class="nav-item" onclick="cambiarVista('farmacia')">
+            <span>💊 Farmacia y Recetas</span>
+            <span class="arrow">›</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main-workspace">
+      <header class="workspace-header">
+        <div>
+          <h1>Panel de Administración y Recursos Humanos</h1>
+          <p class="subtitle">Altas de personal, consultorios, catálogos oficiales y tickets de soporte médico</p>
+        </div>
+        <div class="user-bar">
+          <span class="badge badge-admin">👑 ADMINISTRADOR / RH</span>
+          <span id="lblNombreUsuario" class="user-name">Yunne Díaz</span>
+        </div>
+      </header>
+
+      <div id="alertaGlobal"></div>
+
+      <!-- 4 TARJETAS KPI -->
+      <section class="kpi-grid">
+        <div class="kpi-card kpi-lavender">
+          <div class="kpi-top">
+            <div class="kpi-avatar">👤</div>
+            <span class="kpi-pill">CU-01</span>
+          </div>
+          <div class="kpi-label">Pacientes Registrados</div>
+          <div class="kpi-value" id="kpiTotalPacientes">0</div>
+        </div>
+
+        <div class="kpi-card kpi-cyan">
+          <div class="kpi-top">
+            <div class="kpi-avatar">🩺</div>
+            <span class="kpi-pill">CU-03</span>
+          </div>
+          <div class="kpi-label">Médicos en Plantilla</div>
+          <div class="kpi-value" id="kpiTotalDoctores">0</div>
+        </div>
+
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-top">
+            <div class="kpi-avatar">🚪</div>
+            <span class="kpi-pill">CU-02</span>
+          </div>
+          <div class="kpi-label">Consultorios Activos</div>
+          <div class="kpi-value" id="kpiTotalConsultorios">0</div>
+        </div>
+
+        <div class="kpi-card kpi-pink">
+          <div class="kpi-top">
+            <div class="kpi-avatar">🏷️</div>
+            <span class="kpi-pill">Catálogo</span>
+          </div>
+          <div class="kpi-label">Especialidades Activas</div>
+          <div class="kpi-value" id="kpiTotalEspecialidades">0</div>
+        </div>
+
+        <div class="kpi-card kpi-cyan">
+          <div class="kpi-top">
+            <div class="kpi-avatar">💳</div>
+          </div>
+          <div class="kpi-label">Créditos de Confianza</div>
+          <div class="kpi-value" id="kpiCreditos">100</div>
+        </div>
+      </section>
+
+      <!-- VISTA CATÁLOGOS / ADMIN Y RH -->
+      <section id="vistaCatalogos">
+        <div class="admin-grid-3">
+          <!-- ALTA DE PACIENTE -->
+          <div class="glass-card">
+            <h2>👤 Registrar Paciente (CU-01)</h2>
+            <form id="formPaciente">
+              <div class="form-group">
+                <label>Nombre(s) (Solo letras) *</label>
+                <input type="text" id="pacNombre" placeholder="Ej. Carlos" oninput="soloLetras(this)" required />
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Apellido Paterno *</label><input type="text" id="pacPaterno" oninput="soloLetras(this)" required /></div>
+                <div class="form-group"><label>Apellido Materno</label><input type="text" id="pacMaterno" oninput="soloLetras(this)" /></div>
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Correo Electrónico *</label><input type="email" id="pacCorreo" required /></div>
+                <div class="form-group"><label>Contraseña Inicial *</label><input type="password" id="pacPassword" value="123456" minlength="6" required /></div>
+              </div>
+              <div class="form-group">
+                <label>Núm. Seguridad Social (11 dígitos) *</label>
+                <input type="text" id="pacNss" maxlength="11" minlength="11" oninput="soloNumeros(this, 11)" required />
+              </div>
+              <div class="form-group">
+                <label>Fecha de Nacimiento *</label>
+                <input type="date" id="pacNacimiento" required />
+              </div>
+              <div class="form-group">
+                <label>Teléfono (Lada + 10 dígitos) *</label>
+                <div class="input-row">
+                  <select id="pacLada" style="width:110px;"><option value="+52">🇲🇽 +52</option><option value="+1">🇺🇸 +1</option><option value="+57">🇨🇴 +57</option><option value="+34">🇪🇸 +34</option><option value="+54">🇦🇷 +54</option></select>
+                  <input type="text" id="pacTelefono" maxlength="10" minlength="10" oninput="soloNumeros(this, 10)" required />
+                </div>
+              </div>
+              <button type="submit" class="btn">Guardar Paciente</button>
+            </form>
+          </div>
+
+          <!-- ALTA DE MÉDICO -->
+          <div class="glass-card">
+            <h2><span>🩺 Alta de Médico (CU-03)</span><span class="badge badge-admin">SOLO ADMIN / RH</span></h2>
+            <form id="formDoctor">
+              <div class="form-group">
+                <label>Título y Nombre(s) *</label>
+                <div class="input-row">
+                  <select id="docPrefijo" style="width:90px;"><option value="Dr.">Dr.</option><option value="Dra.">Dra.</option></select>
+                  <input type="text" id="docNombre" oninput="soloLetras(this)" required />
+                </div>
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Apellido Paterno *</label><input type="text" id="docPaterno" oninput="soloLetras(this)" required /></div>
+                <div class="form-group"><label>Apellido Materno</label><input type="text" id="docMaterno" oninput="soloLetras(this)" /></div>
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Correo Institucional *</label><input type="email" id="docCorreo" required /></div>
+                <div class="form-group"><label>Contraseña (RH) *</label><input type="password" id="docPassword" value="123456" required /></div>
+              </div>
+              <div class="form-group">
+                <label>Número de Empleado (8 dígitos) *</label>
+                <input type="text" id="docEmpleado" maxlength="8" minlength="8" oninput="soloNumeros(this, 8)" required />
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Cédula Profesional *</label><input type="text" id="docCedula" maxlength="8" oninput="soloNumeros(this, 8)" required /></div>
+                <div class="form-group"><label>Céd. Especialidad</label><input type="text" id="docCedulaEsp" maxlength="8" oninput="soloNumeros(this, 8)" /></div>
+              </div>
+              <div class="form-group">
+                <label>Especialidad Médica *</label>
+                <select id="docEspecialidad" required></select>
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Inicio de Turno *</label><input type="time" id="docHoraInicio" value="08:00" required /></div>
+                <div class="form-group"><label>Fin de Turno (Mín. 4h) *</label><input type="time" id="docHoraFin" value="16:00" required /></div>
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Turno Inicio *</label><input type="time" id="docHoraInicio" value="08:00" required /></div>
+                <div class="form-group"><label>Turno Fin *</label><input type="time" id="docHoraFin" value="16:00" required /></div>
+              </div>
+              <button type="submit" class="btn">Registrar Médico (RH)</button>
+            </form>
+          </div>
+
+          <!-- ALTA DE CONSULTORIO (MÉDICOS AGRUPADOS Y MÍNIMO 4 HORAS) -->
+          <div class="glass-card">
+            <h2><span>🚪 Alta de Consultorio (CU-02)</span><span class="badge badge-admin">SOLO ADMIN</span></h2>
+            <form id="formConsultorio">
+              <div class="input-row">
+                <div class="form-group"><label>Piso (1-9) *</label><input type="number" id="conPisoNum" min="1" max="9" value="1" oninput="actualizarPreviewConsultorio()" required /></div>
+                <div class="form-group"><label>Núm. (1-99) *</label><input type="number" id="conNumInterno" min="1" max="99" value="2" oninput="actualizarPreviewConsultorio()" required /></div>
+              </div>
+              <div class="form-group">
+                <label>Clave Generada Automáticamente</label>
+                <input type="text" id="conCodigoPreview" value="CONS-102 (Piso 1)" readonly />
+              </div>
+              <div class="form-group">
+                <label>Especialidad del Consultorio *</label>
+                <select id="conEspecialidad" onchange="actualizarCheckboxesDoctoresAlta()" required></select>
+              </div>
+              <div class="form-group">
+                <label>Médicos Asignados (Solo de la especialidad seleccionada)</label>
+                <div id="listaCheckDoctores" class="checkbox-list" style="max-height: 150px;"></div>
+              </div>
+              <div class="form-group">
+                <label>Días Laborales *</label>
+                <div class="dias-grid">
+                  <label class="dia-chip"><input type="checkbox" class="chk-dia" value="1" checked /> Lun</label>
+                  <label class="dia-chip"><input type="checkbox" class="chk-dia" value="2" checked /> Mar</label>
+                  <label class="dia-chip"><input type="checkbox" class="chk-dia" value="3" checked /> Mié</label>
+                  <label class="dia-chip"><input type="checkbox" class="chk-dia" value="4" checked /> Jue</label>
+                  <label class="dia-chip"><input type="checkbox" class="chk-dia" value="5" checked /> Vie</label>
+                  <label class="dia-chip"><input type="checkbox" class="chk-dia" value="6" /> Sáb</label>
+                  <label class="dia-chip"><input type="checkbox" class="chk-dia" value="7" /> Dom</label>
+                </div>
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Hora Inicio *</label><input type="time" id="conHoraInicio" value="08:00" required /></div>
+                <div class="form-group"><label>Hora Fin (Mín. 4 hrs) *</label><input type="time" id="conHoraFin" value="16:00" required /></div>
+              </div>
+              <small style="color: var(--muted); display: block; margin-bottom: 0.75rem; font-size: 0.78rem;">
+                ⏱️ El turno del consultorio debe cubrir mínimo 4 horas continuas.
+              </small>
+              <button type="submit" class="btn">Guardar Consultorio y Horarios</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- SEGUNDA FILA: FARMACIA Y LISTA OFICIAL DE ESPECIALIDADES -->
+        <div class="admin-grid-3" style="margin-top:1.5rem;">
+          <div class="glass-card">
+            <h2><span>💊 Alta Personal Farmacia</span><span class="badge badge-admin">ADMIN / RH</span></h2>
+            <form id="formEmpleadoFarmacia">
+              <div class="form-group"><label>Nombre(s) *</label><input type="text" id="farNombre" oninput="soloLetras(this)" required /></div>
+              <div class="input-row">
+                <div class="form-group"><label>Apellido Paterno *</label><input type="text" id="farPaterno" oninput="soloLetras(this)" required /></div>
+                <div class="form-group"><label>Apellido Materno</label><input type="text" id="farMaterno" oninput="soloLetras(this)" /></div>
+              </div>
+              <div class="input-row">
+                <div class="form-group"><label>Correo Institucional *</label><input type="email" id="farCorreo" required /></div>
+                <div class="form-group"><label>Contraseña *</label><input type="password" id="farPassword" value="123456" required /></div>
+              </div>
+              <button type="submit" class="btn">Registrar Personal de Farmacia</button>
+            </form>
+          </div>
+
+          <!-- SELECCIÓN DESDE LISTA OFICIAL DE ESPECIALIDADES (YA NO SE ESCRIBE) -->
+          <div class="glass-card">
+            <h2><span>🏷️ Activar Especialidad Oficial</span><span class="badge badge-admin">SOLO ADMIN</span></h2>
+            <form id="formEspecialidad">
+              <div class="form-group">
+                <label>Selecciona del Catálogo Oficial Médico *</label>
+                <select id="espNombreInput" required></select>
+              </div>
+              <small style="color: var(--muted); display: block; margin-bottom: 0.85rem; font-size: 0.78rem;">
+                📋 Las especialidades se eligen del catálogo oficial certificado para evitar errores de escritura.
+              </small>
+              <button type="submit" class="btn btn-success">Agregar Especialidad al Sistema</button>
+            </form>
+          </div>
+
+          <div class="glass-card table-wrapper" style="max-height:290px;">
+            <h2><span>📋 Especialidades Activas</span><span class="badge badge-admin">MODIFICAR</span></h2>
+            <table>
+              <thead><tr><th>Nombre de la Especialidad</th><th>Acción</th></tr></thead>
+              <tbody id="tablaEspecialidades"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TERCERA FILA: BANDEJA DE TICKETS DE SOPORTE MÉDICO (CÉDULAS Y NÚM. EMPLEADO) -->
+        <div class="glass-card table-wrapper" style="margin-top:1.5rem;">
+          <h2>
+            <span>🛠️ Tickets de Soporte Técnico Médico (Cambio de Cédulas y Núm. Empleado)</span>
+            <span class="badge badge-admin">AUTORIZACIÓN ADMIN</span>
+          </h2>
+          <p class="helper-text" style="margin-bottom: 0.9rem;">
+            El Número de Empleado y las Cédulas están protegidos. Solo pueden modificarse aprobando un ticket levantado por el médico titular.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Médico Solicitante</th>
+                <th>Motivo del Ticket</th>
+                <th>Cambios Solicitados</th>
+                <th>Estado</th>
+                <th>Acción Admin</th>
+              </tr>
+            </thead>
+            <tbody id="tablaTicketsAdmin"></tbody>
+          </table>
+        </div>
+
+        <!-- CUARTA FILA: DIRECTORIOS DE PACIENTES (SOLO LECTURA) Y MÉDICOS -->
+        <div class="admin-grid-2" style="margin-top:1.5rem;">
+          <div class="glass-card table-wrapper">
+            <h2>👤 Pacientes Registrados (Datos Protegidos)</h2>
+            <table>
+              <thead><tr><th>Nombre / Correo</th><th>NSS / Estado</th><th>Teléfono / Nac.</th><th>Privacidad</th></tr></thead>
+              <tbody id="tablaDirectorioPacientes"></tbody>
+            </table>
+          </div>
+
+          <div class="glass-card table-wrapper">
+            <h2>🩺 Médicos Registrados (Correo y Especialidad)</h2>
+            <table>
+              <thead><tr><th>Médico / Correo</th><th>Empleado / Cédulas</th><th>Especialidad</th><th>Acción</th></tr></thead>
+              <tbody id="tablaDirectorioDoctores"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- QUINTA FILA: DIRECTORIO DE CONSULTORIOS -->
+        <div class="glass-card table-wrapper" style="margin-top:1.5rem;">
+          <h2><span>🏥 Directorio de Consultorios por Especialidad y Horarios</span><span class="badge badge-admin">SOLO ADMIN</span></h2>
+          <table>
+            <thead><tr><th>Especialidad</th><th>Consultorio / Piso</th><th>Médicos Asignados</th><th>Horarios de Atención</th><th>Acción</th></tr></thead>
+            <tbody id="tablaDirectorioConsultorios"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VISTAS COMPLEMENTARIAS DEL ADMIN -->
+      <section id="vistaCitas" class="glass-card table-wrapper hidden">
+        <h2>📅 Control Global de Citas del Hospital</h2>
+        <table>
+          <thead><tr><th>Fecha y Hora</th><th>Paciente</th><th>Doctor / Consultorio</th><th>Estado</th><th>Diagnóstico</th></tr></thead>
+          <tbody id="tablaCitas"></tbody>
+        </table>
+      </section>
+
+      <section id="vistaEstudios" class="bento-grid hidden">
+        <div class="glass-card">
+          <h2>🧪 Nuevo Estudio al Catálogo</h2>
+          <form id="formCatalogoEstudio">
+            <div class="form-group"><label>Nombre del Estudio *</label><input type="text" id="estNombre" required /></div>
+            <div class="form-group"><label>Descripción / Indicaciones</label><input type="text" id="estDescripcion" /></div>
+            <button type="submit" class="btn btn-success">Agregar al Catálogo</button>
+          </form>
+        </div>
+        <div class="glass-card table-wrapper">
+          <h2>🔬 Historial Global de Estudios Solicitados</h2>
+          <table>
+            <thead><tr><th>Fecha</th><th>Paciente</th><th>Estudio</th><th>Indicaciones</th></tr></thead>
+            <tbody id="tablaSolicitudesEstudios"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="vistaFarmacia" class="glass-card table-wrapper hidden">
+        <h2>💊 Control y Surtido Global de Recetas (CU-13)</h2>
+        <table>
+          <thead><tr><th>Folio / Fecha</th><th>Paciente / Médico</th><th>Medicamentos</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody id="tablaRecetas"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL EDITAR ESPECIALIDAD (DESDE LISTA OFICIAL) -->
+  <dialog id="modalEditarEspecialidad">
+    <h2>✏️ Modificar Especialidad Oficial</h2>
+    <form id="formEditarEspecialidad">
+      <input type="hidden" id="editEspId" />
+      <div class="form-group">
+        <label>Selecciona el Nuevo Nombre Oficial *</label>
+        <select id="editEspNombre" required></select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('modalEditarEspecialidad').close()">Cancelar</button>
+        <button type="submit" class="btn btn-sm btn-success">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- MODAL EDITAR MÉDICO (NOMBRE, EMPLEADO Y CÉDULAS BLOQUEADOS PARA EL ADMIN) -->
+  <dialog id="modalEditarDoctor">
+    <h2>✏️ Modificar Datos Administrativos del Médico</h2>
+    <form id="formEditarDoctor">
+      <input type="hidden" id="editDocId" />
+      <div class="form-group">
+        <label>Título y Nombre(s) (🔒 Nombre protegido)</label>
+        <div class="input-row">
+          <select id="editDocPrefijo" style="width:95px;" required>
+            <option value="Dr.">Dr.</option>
+            <option value="Dra.">Dra.</option>
+          </select>
+          <input type="text" id="editDocNombre" readonly />
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group"><label>Apellido Paterno (🔒)</label><input type="text" id="editDocPaterno" readonly /></div>
+        <div class="form-group"><label>Apellido Materno (🔒)</label><input type="text" id="editDocMaterno" readonly /></div>
+      </div>
+      <div class="form-group">
+        <label>Correo Institucional *</label>
+        <input type="email" id="editDocCorreo" required />
+      </div>
+      <div class="input-row">
+        <div class="form-group"><label>Núm. Empleado (🔒 Requiere Ticket)</label><input type="text" id="editDocEmpleado" readonly /></div>
+        <div class="form-group"><label>Céd. Profesional (🔒 Requiere Ticket)</label><input type="text" id="editDocCedula" readonly /></div>
+      </div>
+      <div class="form-group">
+        <label>Céd. Especialidad (🔒 Requiere Ticket)</label>
+        <input type="text" id="editDocCedulaEsp" readonly />
+      </div>
+      <small style="color: var(--secondary); display: block; margin-bottom: 0.85rem; font-size: 0.78rem; font-weight: 600;">
+        🔒 El Nombre no es modificable. El Número de Empleado y las Cédulas solo se actualizan cuando el médico levanta un Ticket de Soporte Técnico.
+      </small>
+      <div class="form-group">
+        <label>Especialidad Médica *</label>
+        <select id="editDocEspecialidad" required></select>
+      </div>
+      <div class="input-row">
+        <div class="form-group"><label>Inicio de Turno *</label><input type="time" id="editDocHoraInicio" value="08:00" required /></div>
+        <div class="form-group"><label>Fin de Turno (Mín. 4h) *</label><input type="time" id="editDocHoraFin" value="16:00" required /></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('modalEditarDoctor').close()">Cancelar</button>
+        <button type="submit" class="btn btn-sm btn-success">Guardar Cambios</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- MODAL EDITAR CONSULTORIO -->
+  <dialog id="modalEditarConsultorio">
+    <h2>✏️ Modificar Consultorio (Admin)</h2>
+    <form id="formEditarConsultorio">
+      <input type="hidden" id="editConId" />
+      <div class="input-row">
+        <div class="form-group"><label>Piso (1-9) *</label><input type="number" id="editConPisoNum" min="1" max="9" oninput="actualizarPreviewEditarConsultorio()" required /></div>
+        <div class="form-group"><label>Núm. (1-99) *</label><input type="number" id="editConNumInterno" min="1" max="99" oninput="actualizarPreviewEditarConsultorio()" required /></div>
+      </div>
+      <div class="form-group">
+        <label>Clave Generada Automáticamente</label>
+        <input type="text" id="editConCodigoPreview" readonly />
+      </div>
+      <div class="form-group">
+        <label>Especialidad del Consultorio *</label>
+        <select id="editConEspecialidad" onchange="actualizarCheckboxesDoctoresEdicion()" required></select>
+      </div>
+      <div class="form-group">
+        <label>Médicos Asignados (Solo de la especialidad seleccionada)</label>
+        <div id="editListaCheckDoctores" class="checkbox-list" style="max-height: 150px;"></div>
+      </div>
+      <div class="form-group">
+        <label>Días Laborales *</label>
+        <div class="dias-grid">
+          <label class="dia-chip"><input type="checkbox" class="edit-chk-dia" value="1" /> Lun</label>
+          <label class="dia-chip"><input type="checkbox" class="edit-chk-dia" value="2" /> Mar</label>
+          <label class="dia-chip"><input type="checkbox" class="edit-chk-dia" value="3" /> Mié</label>
+          <label class="dia-chip"><input type="checkbox" class="edit-chk-dia" value="4" /> Jue</label>
+          <label class="dia-chip"><input type="checkbox" class="edit-chk-dia" value="5" /> Vie</label>
+          <label class="dia-chip"><input type="checkbox" class="edit-chk-dia" value="6" /> Sáb</label>
+          <label class="dia-chip"><input type="checkbox" class="edit-chk-dia" value="7" /> Dom</label>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="form-group"><label>Hora Inicio *</label><input type="time" id="editConHoraInicio" required /></div>
+        <div class="form-group"><label>Hora Fin (Mín. 4 hrs) *</label><input type="time" id="editConHoraFin" required /></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('modalEditarConsultorio').close()">Cancelar</button>
+        <button type="submit" class="btn btn-sm btn-success">Guardar Cambios</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="admin.js"></script>
+</body>
+</html>

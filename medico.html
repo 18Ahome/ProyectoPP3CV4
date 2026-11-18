@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ebersys — Portal Médico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="medico.css" />
+</head>
+<body>
+
+  <div class="dashboard-shell">
+    <!-- SIDEBAR IZQUIERDO -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a href="#" class="logo-wrapper">
+          <div class="logo-container">
+            <div class="e-icon">
+              <div class="line left-line"></div>
+              <div class="line top-line"></div>
+              <div class="line mid-line"></div>
+              <div class="line bottom-line"></div>
+              <div class="hospital-details">
+                <div class="h-cross"></div>
+                <div class="h-windows"></div>
+                <div class="h-door"></div>
+              </div>
+            </div>
+            <div class="text">bersys</div>
+          </div>
+        </a>
+
+        <nav class="side-nav">
+          <button id="btnTabCitas" class="nav-item active" onclick="cambiarVista('citas')">
+            <span>📅 Citas y Agenda</span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="btnTabEstudios" class="nav-item" onclick="cambiarVista('estudios')">
+            <span>🔬 Estudios Clínicos</span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="btnTabFarmacia" class="nav-item" onclick="cambiarVista('farmacia')">
+            <span>💊 Farmacia y Recetas</span>
+            <span class="arrow">›</span>
+          </button>
+          <button id="btnTabSoporte" class="nav-item" onclick="cambiarVista('soporte')">
+            <span>🛠️ Soporte y Cédulas</span>
+            <span class="arrow">›</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main-workspace">
+      <header class="workspace-header">
+        <div>
+          <h1>Panel Clínico del Médico</h1>
+          <p class="subtitle">Gestión de agenda, diagnósticos, estudios, recetas y soporte técnico</p>
+        </div>
+        <div class="user-bar">
+          <span class="badge badge-doctor">🩺 MÉDICO</span>
+          <span id="lblNombreUsuario" class="user-name">Dra. María Gómez</span>
+        </div>
+      </header>
+
+      <div id="alertaGlobal"></div>
+
+      <!-- 4 TARJETAS KPI -->
+      <section class="kpi-grid">
+        <div class="kpi-card kpi-lavender">
+          <div class="kpi-top">
+            <div class="kpi-avatar">🗓️</div>
+            <span class="kpi-pill">Agenda</span>
+          </div>
+          <div class="kpi-label">Citas Programadas</div>
+          <div class="kpi-value" id="kpiProgramadas">0</div>
+        </div>
+
+        <div class="kpi-card kpi-cyan">
+          <div class="kpi-top">
+            <div class="kpi-avatar">✅</div>
+            <span class="kpi-pill">CU-06</span>
+          </div>
+          <div class="kpi-label">Consultas Finalizadas</div>
+          <div class="kpi-value" id="kpiFinalizadas">0</div>
+        </div>
+
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-top">
+            <div class="kpi-avatar">🔬</div>
+            <span class="kpi-pill">CU-07</span>
+          </div>
+          <div class="kpi-label">Estudios Solicitados</div>
+          <div class="kpi-value" id="kpiEstudiosDoc">0</div>
+        </div>
+
+        <div class="kpi-card kpi-pink">
+          <div class="kpi-top">
+            <div class="kpi-avatar">💊</div>
+            <span class="kpi-pill">CU-12</span>
+          </div>
+          <div class="kpi-label">Recetas Emitidas</div>
+          <div class="kpi-value" id="kpiRecetasDoc">0</div>
+        </div>
+      </section>
+
+      <!-- VISTA 1: CITAS MÉDICAS Y BLOQUEO DE AGENDA -->
+      <section id="vistaCitas" class="bento-grid">
+        <div class="left-stack">
+          <div class="glass-card">
+            <h2>Agendar Nueva Cita</h2>
+            <form id="formCita">
+              <div class="form-group">
+                <label>Paciente</label>
+                <select id="selectPaciente" required></select>
+              </div>
+              <div class="form-group">
+                <label>Consultorio (Agrupado por Especialidad)</label>
+                <select id="selectConsultorio" onchange="actualizarInfoConsultorioCita()" required></select>
+              </div>
+              <div id="infoHorarioConsultorio" class="info-horario-box"></div>
+              <div class="form-group">
+                <label>Médico que atenderá</label>
+                <select id="selectDoctor" onchange="cargarSlotsDisponiblesUI()" required></select>
+              </div>
+              <div class="form-group">
+                <label>1. Selecciona la Fecha de la Cita *</label>
+                <input type="date" id="inputFechaCita" onchange="cargarSlotsDisponiblesUI()" required />
+              </div>
+              <div class="form-group">
+                <label>2. Selecciona un Bloque Disponible (30 min) *</label>
+                <input type="hidden" id="inputSlotSeleccionado" required />
+                <div id="contenedorSlots" class="slots-grid"></div>
+                <small class="legend-text">🟢 Disponible | 🔴 Ocupado | 🟣 Bloqueado | ⚪ Pasado</small>
+              </div>
+              <button type="submit" class="btn">Confirmar y Agendar Cita</button>
+            </form>
+          </div>
+
+          <!-- BLOQUEAR / CANCELAR BLOQUES DE AGENDA -->
+          <div class="glass-card">
+            <h2>
+              <span>🚫 Bloquear / Cancelar Bloques</span>
+              <span class="badge badge-doctor">MÉDICO / ADMIN</span>
+            </h2>
+            <p class="helper-text">
+              Selecciona el día y haz clic en los bloques de 30 minutos en los que te ausentarás.
+            </p>
+            <form id="formBloqueoDoctor">
+              <div class="form-group">
+                <label>Médico que se ausentará *</label>
+                <select id="selectDoctorBloqueo" disabled required></select>
+              </div>
+              <div class="form-group">
+                <label>1. Día de la Ausencia *</label>
+                <input type="date" id="bloqueoFecha" onchange="cargarBloquesParaCancelarUI()" required />
+              </div>
+              <div class="form-group">
+                <div class="label-row">
+                  <label>2. Bloques de 30 min a Bloquear *</label>
+                  <button type="button" class="btn btn-sm btn-secondary" onclick="seleccionarTodosBloquesDoctor()">Seleccionar Todo el Día</button>
+                </div>
+                <div id="contenedorBloquesDoctor" class="slots-grid"></div>
+              </div>
+              <div class="form-group">
+                <label>Estado Temporal de los Bloques *</label>
+                <select id="bloqueoEstadoSlot" required>
+                  <option value="BLOQUEADO">🔒 BLOQUEADO (No agendar durante ausencia)</option>
+                  <option value="INACTIVO">⏸️ INACTIVO (Fuera de servicio temporal)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Motivo de la Ausencia / Cancelación *</label>
+                <input type="text" id="bloqueoMotivo" placeholder="Ej. Congreso médico, junta clínica..." required />
+              </div>
+              <button type="submit" class="btn btn-danger">Bloquear Horarios Seleccionados y Notificar</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="glass-card table-wrapper">
+          <h2>🩺 Mi Agenda de Consultas Médicas</h2>
+          <div class="rules-box">
+            <strong>📌 Reglas de Cancelación:</strong> Solicita motivo obligatorio, permite reagendar para otro día desde la ventana y notifica al paciente sin penalizarlo.
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha y Hora</th>
+                <th>Paciente</th>
+                <th>Doctor / Consultorio</th>
+                <th>Estado / Detalle</th>
+                <th>Diagnóstico (CU-06)</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaCitas"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VISTA 2: ESTUDIOS CLÍNICOS -->
+      <section id="vistaEstudios" class="bento-grid hidden">
+        <div class="glass-card">
+          <h2>📋 Solicitar Estudio a Paciente (CU-07)</h2>
+          <form id="formSolicitudEstudio">
+            <div class="form-group">
+              <label>Cita Médica de Origen *</label>
+              <select id="selectCitaOrigen" required></select>
+            </div>
+            <div class="form-group">
+              <label>Estudio Clínico a Realizar *</label>
+              <select id="selectEstudioClinico" required></select>
+            </div>
+            <button type="submit" class="btn">Generar Orden de Estudio</button>
+          </form>
+        </div>
+
+        <div class="glass-card table-wrapper">
+          <h2>Historial de Solicitudes de Estudios Clínicos (CU-09)</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha Solicitud</th>
+                <th>Paciente</th>
+                <th>Estudio Solicitado</th>
+                <th>Indicaciones</th>
+                <th>Cita Origen / Diagnóstico</th>
+              </tr>
+            </thead>
+            <tbody id="tablaSolicitudesEstudios"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VISTA 3: FARMACIA Y RECETAS -->
+      <section id="vistaFarmacia" class="bento-grid hidden">
+        <div class="glass-card">
+          <h2>
+            <span>📝 Emitir Receta Médica (CU-12)</span>
+            <span class="badge badge-doctor">Exclusivo Médico</span>
+          </h2>
+          <form id="formReceta">
+            <div class="form-group">
+              <label>Folio Físico Impreso (RF-14 / RF-15) *</label>
+              <input type="text" id="recFolio" placeholder="Ej. FOL-2026-001" required />
+            </div>
+            <div class="form-group">
+              <label>Consulta Médica Asociada *</label>
+              <select id="selectCitaReceta" required></select>
+            </div>
+            <label>Medicamentos Recetados *</label>
+            <div id="contenedorMedicamentos">
+              <div class="med-box">
+                <div class="form-group">
+                  <label>Medicamento</label>
+                  <input type="text" class="med-nombre" placeholder="Ej. Amoxicilina 500mg" required />
+                </div>
+                <div class="form-group">
+                  <label>Dosis e Indicaciones</label>
+                  <input type="text" class="med-dosis" placeholder="Ej. 1 cada 8 hrs por 7 días" required />
+                </div>
+                <div class="form-group">
+                  <label>Cantidad a Entregar</label>
+                  <input type="number" class="med-cantidad" value="1" min="1" required />
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary" style="margin-bottom:0.75rem;" onclick="agregarCampoMedicamento()">+ Agregar otro medicamento</button>
+            <button type="submit" class="btn">Emitir y Guardar Receta</button>
+          </form>
+        </div>
+
+        <div class="glass-card table-wrapper">
+          <div class="card-header-flex">
+            <h2>💊 Recetas Emitidas</h2>
+            <input type="text" id="inputBuscarFolio" placeholder="🔍 Buscar por Folio..." oninput="renderizarTablaRecetas()" style="max-width: 240px;" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Folio Físico / Emisión</th>
+                <th>Paciente / Médico</th>
+                <th>Medicamentos y Dosis</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaRecetas"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- VISTA 4: TICKETS DE SOPORTE TÉCNICO PARA CAMBIO DE CÉDULA Y NÚM. EMPLEADO -->
+      <section id="vistaSoporte" class="bento-grid hidden">
+        <div class="glass-card">
+          <h2>
+            <span>🛠️ Levantar Ticket de Soporte Técnico</span>
+            <span class="badge badge-doctor">Credenciales</span>
+          </h2>
+          <p class="helper-text">
+            Por seguridad, tu Número de Empleado y tus Cédulas están bloqueados. Si necesitas corregirlos o agregar tu Cédula de Especialidad, levanta un ticket para que Administración lo autorice.
+          </p>
+          <div id="boxMisCredencialesActuales" class="info-horario-box" style="margin-bottom: 1rem;"></div>
+
+          <form id="formTicketSoporte">
+            <div class="form-group">
+              <label>Motivo de la Solicitud / Aclaración *</label>
+              <textarea
+                id="ticketMotivo"
+                rows="2"
+                placeholder="Ej. Corrección de dígito en cédula profesional / Registro de nueva cédula de especialidad..."
+                required
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label>Nuevo Número de Empleado (Opcional, 8 dígitos numéricos)</label>
+              <input
+                type="text"
+                id="ticketNuevoEmpleado"
+                maxlength="8"
+                minlength="8"
+                placeholder="Deja vacío si no cambia"
+                oninput="this.value = this.value.replace(/\D/g, '').slice(0, 8)"
+              />
+            </div>
+            <div class="form-group">
+              <label>Nueva Cédula Profesional (Opcional, máx. 8 dígitos)</label>
+              <input
+                type="text"
+                id="ticketNuevaCedulaProf"
+                maxlength="8"
+                placeholder="Deja vacío si no cambia"
+                oninput="this.value = this.value.replace(/\D/g, '').slice(0, 8)"
+              />
+            </div>
+            <div class="form-group">
+              <label>Nueva Cédula de Especialidad (Opcional, máx. 8 dígitos)</label>
+              <input
+                type="text"
+                id="ticketNuevaCedulaEsp"
+                maxlength="8"
+                placeholder="Deja vacío si no cambia"
+                oninput="this.value = this.value.replace(/\D/g, '').slice(0, 8)"
+              />
+            </div>
+            <button type="submit" class="btn">Enviar Ticket a Administración</button>
+          </form>
+        </div>
+
+        <div class="glass-card table-wrapper">
+          <h2>📋 Historial de Mis Tickets de Soporte</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Motivo</th>
+                <th>Cambios Solicitados</th>
+                <th>Estado / Respuesta Admin</th>
+              </tr>
+            </thead>
+            <tbody id="tablaMisTickets"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL DIAGNÓSTICO CIE-10 (CU-06) Y ASIGNACIÓN DE ESTUDIO EN CONSULTA (CU-07) -->
+  <dialog id="modalDiagnostico">
+    <h2>🩺 Atender Consulta Médica (CU-06 / CU-07)</h2>
+    <form id="formDiagnostico">
+      <input type="hidden" id="citaIdDiagnostico" />
+      <div class="form-group">
+        <label>1. Código Oficial de Diagnóstico (Catálogo CIE-10 / CIE-11) *</label>
+        <select id="selectCodigoCIE10" required>
+          <option value="">-- Selecciona un código CIE-10 oficial --</option>
+          <option value="[CIE-10: J00] Rinofaringitis aguda (resfriado común)">J00 — Rinofaringitis aguda (resfriado común)</option>
+          <option value="[CIE-10: J02.9] Faringitis aguda bacteriana / no especificada">J02.9 — Faringitis aguda bacteriana</option>
+          <option value="[CIE-10: I10] Hipertensión esencial (primaria)">I10 — Hipertensión esencial (primaria)</option>
+          <option value="[CIE-10: E11.9] Diabetes mellitus tipo 2 sin complicaciones">E11.9 — Diabetes mellitus tipo 2</option>
+          <option value="[CIE-10: K29.7] Gastritis aguda / enfermedad ácido péptica">K29.7 — Gastritis aguda / enfermedad ácido péptica</option>
+          <option value="[CIE-10: A09] Gastroenteritis y colitis de origen infeccioso">A09 — Gastroenteritis y colitis infecciosa</option>
+          <option value="[CIE-10: N39.0] Infección de vías urinarias, sitio no especificado">N39.0 — Infección de vías urinarias</option>
+          <option value="[CIE-10: G43.9] Migraña / Cefalea tensional">G43.9 — Migraña / Cefalea vascular</option>
+          <option value="[CIE-10: L20.9] Dermatitis atópica / eccema clínico">L20.9 — Dermatitis atópica / eccema clínico</option>
+          <option value="[CIE-10: M54.5] Lumbago no especificado / dolor osteomuscular">M54.5 — Lumbago / dolor osteomuscular</option>
+          <option value="[CIE-10: H10.9] Conjuntivitis aguda">H10.9 — Conjuntivitis aguda</option>
+          <option value="[CIE-10: Z00.0] Examen médico general / control preventivo">Z00.0 — Examen médico general / control pediátrico</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>2. Nota Clínica Complementaria del Diagnóstico *</label>
+        <input type="text" id="inputDiagnostico" placeholder="Ej. Cuadro clínico de 3 días de evolución..." required />
+      </div>
+      <div class="form-group">
+        <label>3. Módulo de Indicaciones Generales y Cuidados *</label>
+        <textarea id="inputObservaciones" rows="3" placeholder="Ej. Reposo relativo por 48 hrs, hidratación oral abundante y dieta blanda..." required></textarea>
+      </div>
+      <div class="form-group" style="background: rgba(35, 113, 186, 0.06); padding: 0.75rem; border-radius: 12px; border: 1px dashed #2371BA;">
+        <label>🔬 4. ¿Ordenar Estudio Clínico durante esta consulta? (CU-07 - Opcional)</label>
+        <select id="selectEstudioEnConsulta">
+          <option value="">-- No requiere estudio clínico adicional --</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('modalDiagnostico').close()">Cancelar</button>
+        <button type="submit" class="btn btn-sm btn-success">Guardar CIE-10 y Finalizar Consulta</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- MODAL CANCELAR / REAGENDAR DOCTOR -->
+  <dialog id="modalCancelarCitaDoctor">
+    <h2>🩺 Cancelar o Reagendar Cita (Médico)</h2>
+    <p id="infoCitaCancelarDoctor" class="helper-text"></p>
+    <form id="formCancelarCitaDoctor">
+      <input type="hidden" id="cancelDocCitaId" />
+      <div class="form-group">
+        <label>Motivo de la cancelación (Se enviará al paciente) *</label>
+        <textarea id="cancelDocMotivo" rows="2" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>¿Deseas reagendar esta cita para otro día de una vez? *</label>
+        <select id="cancelDocQuiereReagendar" onchange="toggleSeccionReagendarDoctor()">
+          <option value="no">No, solo cancelar y notificar al paciente</option>
+          <option value="si">Sí, elegir nueva fecha y bloque ahora mismo</option>
+        </select>
+      </div>
+      <div id="seccionReagendarEnModal" class="hidden" style="margin-bottom:0.9rem;">
+        <div class="form-group">
+          <label>1. Nueva Fecha *</label>
+          <input type="date" id="cancelDocNuevaFecha" onchange="cargarSlotsModalReagendarDoctor()" />
+        </div>
+        <div class="form-group">
+          <label>2. Nuevo Bloque Disponible (30 min) *</label>
+          <input type="hidden" id="cancelDocNuevoSlotISO" />
+          <div id="contenedorSlotsModalDoctor" class="slots-grid"></div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="document.getElementById('modalCancelarCitaDoctor').close()">Cerrar</button>
+        <button type="submit" class="btn btn-sm btn-danger">Confirmar y Notificar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="medico.js"></script>
+</body>
+</html>

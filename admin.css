@@ -1,0 +1,52 @@
+@import url('medico.css');
+
+/* Grids de 3 y 2 columnas para el Panel de Administración y RH */
+.admin-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.admin-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.input-row {
+  display: flex;
+  gap: 0.6rem;
+}
+.input-row .form-group { flex: 1; }
+
+.checkbox-list {
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1.5px solid #dce5f2;
+  border-radius: 12px;
+  padding: 0.55rem;
+  background: var(--bg-soft);
+}
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  margin-bottom: 0.35rem;
+}
+.checkbox-item input { width: auto; }
+
+.dias-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.dia-chip {
+  display: flex; align-items: center; gap: 0.25rem;
+  background: var(--bg-soft); border: 1px solid #dce5f2;
+  padding: 0.3rem 0.6rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+}
+.dia-chip input { width: auto; }
+
+.badge-admin {
+  background: rgba(116, 0, 184, 0.14);
+  color: var(--secondary);
+}

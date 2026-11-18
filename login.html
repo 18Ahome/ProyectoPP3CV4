@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login y Registro - Ebersys</title>
+  
+  <!-- Tailwind CSS por CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2371BA',
+            secondary: '#7400B8',
+            accent: '#FF66C4',
+            success: '#06D6A0',
+            warning: '#FFD166',
+            danger: '#900C3F',
+            textMain: '#333333',
+            textSec: '#666666',
+            placeholder: '#F0F4F8',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <link rel="stylesheet" href="login.css">
+</head>
+<body class="bg-[#F0F4F8] h-screen flex flex-col overflow-hidden m-0 p-0 font-sans">
+
+  <!-- Fondo de cruces médicas -->
+  <div id="crosses-bg" class="absolute inset-0 z-0 overflow-hidden pointer-events-none"></div>
+
+  <!-- HEADER EBERSYS -->
+  <header class="w-full relative z-[60] bg-white/80 backdrop-blur-md sticky top-0 border-b border-placeholder/50">
+    <nav class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex justify-between items-center">
+
+      <!-- Logo a la Izquierda (Animado, lleva a index.html) -->
+      <a href="index.html" class="logo-wrapper transition-transform transform hover:scale-105">
+        <div class="logo-container">
+          <div class="e-icon">
+            <div class="line left-line"></div>
+            <div class="line top-line"></div>
+            <div class="line mid-line"></div>
+            <div class="line bottom-line"></div>
+            <div class="hospital-details">
+              <div class="h-cross"></div>
+              <div class="h-windows"></div>
+              <div class="h-door"></div>
+            </div>
+          </div>
+          <div class="text">bersys</div>
+        </div>
+      </a>
+
+      <!-- Enlaces al Centro (Idénticos al Index) -->
+      <div class="hidden md:flex gap-3 items-center font-medium text-textSec">
+        <a href="index.html" id="nav-inicio" class="nav-ebersys nav-primary">
+          Inicio
+        </a>
+        <a href="index.html#booking-section" id="nav-agendar" class="nav-ebersys nav-secondary">
+          Agendar cita
+        </a>
+        <button type="button" id="nav-consultorios" onclick="abrirModalInfoLogin('consultorios')" class="nav-ebersys nav-accent">
+          Consultorios
+        </button>
+        <button type="button" id="nav-reglas" onclick="abrirModalInfoLogin('reglas')" class="nav-ebersys nav-success">
+          Reglas de Atención
+        </button>
+      </div>
+
+      <!-- Botón a la Derecha (Activo porque estamos en Dar seguimiento / Login) -->
+      <div class="hidden sm:flex gap-4 items-center font-medium">
+        <button type="button" id="nav-seguimiento-btn" onclick="cerrarModalInfoLogin()" class="text-white bg-secondary border border-secondary transition-all duration-300 px-6 py-2.5 rounded-full shadow-soft font-semibold">
+          Dar seguimiento a tu cita
+        </button>
+      </div>
+
+      <!-- Botón Mobile para regresar al Index -->
+      <a href="index.html" class="sm:hidden text-primary font-bold text-sm px-4 py-2 rounded-full bg-primary/10">
+        ← Inicio
+      </a>
+
+    </nav>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="flex flex-1 w-full max-w-7xl mx-auto relative z-10 items-center justify-between px-6 lg:px-10 gap-6 overflow-hidden">
+    
+    <!-- Mitad Izquierda: Doctor con sombra de piso discreta -->
+    <div class="flex-[0.85] relative flex justify-center items-center">
+      <div class="doctor-scene">
+        <div class="floor-shadow"></div>
+
+        <!-- COMPONENTE DOCTOR -->
+        <div class="doctor" id="doctor">
+          <div class="hair">
+            <svg viewBox="0 0 220 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 26 76 C 14 75, 10 67, 9 60 C 17 62, 23 60, 26 54 C 17 48, 17 38, 21 29 C 26 37, 35 36, 46 30 C 72 15, 102 6, 134 8 C 166 10, 189 24, 198 40 C 199 50, 200 58, 206 62 C 209 58, 212 53, 213 50 C 214 63, 208 74, 198 79 C 184 78, 176 70, 175 56 C 174 43, 152 38, 120 42 C 86 46, 52 64, 26 76 Z" 
+                    stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div class="head">
+            <div class="eye left"><div class="pupil"></div></div>
+            <div class="eye right"><div class="pupil"></div></div>
+            <div class="cheek left"></div>
+            <div class="cheek right"></div>
+            <div class="mouth"></div>
+          </div>
+
+          <div class="stethoscope"></div>
+          <div class="stetho-lower"></div>
+          <div class="stetho-bell"></div>
+
+          <div class="arm left"></div>
+          <div class="arm right"></div>
+
+          <div class="body">
+            <div class="coat-line"></div>
+            <div class="pocket">
+              <div class="syringe"></div>
+            </div>
+            <div class="chest-cross"></div>
+          </div>
+
+          <div class="legs">
+            <div class="leg left"></div>
+            <div class="leg right"></div>
+          </div>
+
+          <div class="bag">
+            <div class="bag-handle"></div>
+            <div class="bag-body">
+              <div class="bag-cross"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mitad Derecha: Tarjeta Glass con alternancia entre Login y Registro -->
+    <div class="flex-[1.35] flex justify-end items-center">
+      <div class="glass-card">
+
+        <!-- Alerta compartida de estado / error -->
+        <div id="alertaLogin" class="login-alert hidden"></div>
+
+        <!-- ==========================================
+             PANEL 1: INICIAR SESIÓN (Visible por defecto)
+             ========================================== -->
+        <form id="formLogin" class="w-full flex flex-col items-center">
+          <h2 class="glass-title">Iniciar Sesión</h2>
+          <p class="glass-subtitle">Inicie sesión para ingresar a nuestro portal</p>
+          
+          <!-- Input Usuario con ícono a la izquierda -->
+          <div class="glass-input-group">
+            <span class="input-icon-left">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+              </svg>
+            </span>
+            <input type="email" id="email" placeholder="Correo electrónico" required>
+          </div>
+          
+          <!-- Input Password con ojo a la derecha -->
+          <div class="glass-input-group">
+            <input type="password" id="password" class="pwd-interactive" placeholder="Contraseña" required>
+            <button id="toggle-pwd" type="button" class="toggle-pwd-btn" aria-label="Mostrar contraseña">
+              <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+          
+          <!-- Botón Login principal con degradado -->
+          <button id="btnSubmitLogin" class="glass-login-btn" type="submit">Iniciar Sesión</button>
+
+          <!-- Accesos rápidos de demostración por rol -->
+          <div class="demo-access-box">
+            <span class="demo-access-label">⚡ Accesos rápidos de prueba:</span>
+            <div class="demo-pills">
+              <button type="button" class="demo-pill" onclick="llenarLoginDemo('juan.paciente@hospital.com')">👤 Paciente</button>
+              <button type="button" class="demo-pill" onclick="llenarLoginDemo('maria.doctora@hospital.com')">🩺 Médico</button>
+              <button type="button" class="demo-pill" onclick="llenarLoginDemo('admin@hospital.com')">👑 Admin / RH</button>
+              <!--<button type="button" class="demo-pill" onclick="llenarLoginDemo('farmacia@hospital.com')">💊 Farmacia</button>-->
+            </div>
+          </div>
+          
+          <!-- Pie de tarjeta con botón para cambiar a Registro -->
+          <div class="signup-row">
+            <span class="signup-prompt">¿No tienes una cuenta?</span>
+            <button type="button" onclick="cambiarPanelAuth('registro')" class="glass-signup-btn">Registrarse</button>
+          </div>
+        </form>
+
+        <!-- ==========================================
+             PANEL 2: REGISTRO DE PACIENTE (Oculto al inicio)
+             ========================================== -->
+        <form id="formRegistro" class="w-full flex-col hidden">
+          <div class="flex items-center justify-between border-b border-white/60 pb-2.5 mb-4">
+            <h3 class="text-xl font-extrabold text-textMain">Registrarse</h3>
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <!-- Nombre(s) -->
+            <div>
+              <label class="reg-label">Nombre(s) (Solo letras) <span class="text-danger">*</span></label>
+              <input type="text" id="regNombre" placeholder="Ej. Andrea" oninput="soloLetras(this)" class="reg-input" required>
+            </div>
+
+            <!-- Apellidos -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="reg-label">Apellido Paterno <span class="text-danger">*</span></label>
+                <input type="text" id="regPaterno" placeholder="Ej. Morales" oninput="soloLetras(this)" class="reg-input" required>
+              </div>
+              <div>
+                <label class="reg-label">Apellido Materno</label>
+                <input type="text" id="regMaterno" placeholder="Ej. Soto" oninput="soloLetras(this)" class="reg-input">
+              </div>
+            </div>
+
+            <!-- Correo Electrónico y Contraseña -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="reg-label">Correo Electrónico <span class="text-danger">*</span></label>
+                <input type="email" id="regCorreo" placeholder="andrea@correo.com" class="reg-input" required>
+              </div>
+              <div>
+                <label class="reg-label">Contraseña <span class="text-danger">*</span></label>
+                <div class="relative">
+                  <input type="password" id="regPassword" minlength="6" placeholder="Mín. 6 caracteres" class="reg-input pwd-interactive pr-10" required>
+                  <button type="button" id="toggle-reg-pwd" class="toggle-pwd-btn" style="right: 12px;" aria-label="Mostrar contraseña">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- NSS y Fecha de Nacimiento -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="reg-label">NSS (11 dígitos) <span class="text-danger">*</span></label>
+                <input type="text" id="regNss" maxlength="11" minlength="11" inputmode="numeric" oninput="soloNumeros(this, 11)" placeholder="12345678901" class="reg-input" required>
+              </div>
+              <div>
+                <label class="reg-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
+                <input type="date" id="regNacimiento" class="reg-input" required>
+              </div>
+            </div>
+
+            <!-- Teléfono (Lada + 10 dígitos) -->
+            <div>
+              <label class="reg-label">Teléfono (Lada + 10 dígitos) <span class="text-danger">*</span></label>
+              <div class="flex">
+                <select id="regLada" class="reg-select-lada" required>
+                  <option value="+52">MX +52</option>
+                  <option value="+1">US +1</option>
+                  <option value="+57">CO +57</option>
+                  <option value="+34">ES +34</option>
+                  <option value="+54">AR +54</option>
+                </select>
+                <input type="tel" id="regTelefono" maxlength="10" minlength="10" inputmode="numeric" oninput="soloNumeros(this, 10)" placeholder="5512345678" class="reg-input rounded-l-none flex-1" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Crear Cuenta -->
+          <button id="btnSubmitRegistro" type="submit" class="glass-login-btn" style="margin-top: 16px; margin-bottom: 12px; padding: 12px;">
+            Crear Cuenta e Ingresar
+          </button>
+
+          <!-- Pie para volver al Login -->
+          <div class="signup-row">
+            <span class="signup-prompt">¿Ya tienes una cuenta?</span>
+            <button type="button" onclick="cambiarPanelAuth('login')" class="glass-signup-btn">Iniciar Sesión</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL INFORMATIVO PARA CONSULTORIOS Y REGLAS (DEBAJO DEL HEADER z-40) -->
+  <div id="info-modal-overlay" onclick="if(event.target === this) cerrarModalInfoLogin()" class="fixed inset-0 pt-20 bg-textMain/25 backdrop-blur-sm z-40 hidden items-center justify-center p-6">
+    <div class="glass-card !max-w-3xl w-full !p-8 !bg-white/90 relative max-h-[80vh] overflow-y-auto !items-stretch">
+      <button type="button" onclick="cerrarModalInfoLogin()" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-placeholder hover:bg-danger hover:text-white transition-colors font-bold text-lg">✕</button>
+      <div id="info-modal-content" class="w-full text-left"></div>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>
